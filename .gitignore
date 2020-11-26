@@ -1,3 +1,8 @@
+# IDEs
+.vscode
+.DSstore
+.idea
+
 # Logs
 logs
 *.log
