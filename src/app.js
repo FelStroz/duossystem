@@ -5,19 +5,21 @@ const mongoose = require("mongoose");
 const cors = require('cors');
 require('dotenv').config();
 
-let usersRouter = require('./routes/users');
-
 let app = express();
 app.use(cors());
 
-// mongodb+srv://Duos:@duos071119@maincluster.d77dl.mongodb.net/duos?retryWrites=true&w=majority
-
-
-app.use(logger('dev')); // process.env.LOGS
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(logger(`${process.env.MORGAN_CONFIG}`)); // process.env.LOGS
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 
-app.use('/users', usersRouter);
+mongoose.connect(process.env.DB_CONNECT,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }
+);
+
+app.all('*', require('./routes/index'));
 
 module.exports = app;
