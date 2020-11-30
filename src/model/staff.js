@@ -1,7 +1,7 @@
-const schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
 const {isDate, isMobilePhone} = require('validator');
 
-let StaffSchema = new schema({
+let StaffSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -32,8 +32,8 @@ let StaffSchema = new schema({
         }
     }],
     phone: {
-        type: Number,
-        validate: [isMobilePhone('pt-BR'), 'Invalid phone number'],
+        type: String,
+        validate: [isMobilePhone, 'Invalid phone number'],
         unique: true,
     },
     profession: {
