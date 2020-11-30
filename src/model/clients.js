@@ -1,11 +1,11 @@
-const schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
 const {isDate, isMobilePhone} = require('validator');
 
-let clientSchema = new schema({
+let ClientSchema = new mongoose.Schema({
     name: {type: String, maxlength: 70, required: true},
     birthday: {type: Date, validate: [isDate, 'Invalid format in date of the birthday! Please insert a valid date!'], required: true},
     instagram: {type: String},
-    phone: {type: Number, validate: [isMobilePhone('pt-BR'), 'Invalid phone number'], required: true},
+    phone: {type: Number, validate: [isMobilePhone, 'Invalid phone number'], required: true},
     address: {type: String},
     services: [{
         type: mongoose.Types.ObjectId,
@@ -17,4 +17,4 @@ let clientSchema = new schema({
     }
 }, {timestamp: true});
 
-module.exports = mongoose.model("Client", clientSchema);
+module.exports = mongoose.model("Client", ClientSchema);

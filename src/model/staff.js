@@ -1,7 +1,7 @@
 const schema = require('mongoose').Schema;
 const {isDate, isMobilePhone} = require('validator');
 
-let staffSchema = new schema({
+let StaffSchema = new schema({
     name: {
         type: String,
         required: true,
@@ -28,7 +28,6 @@ let staffSchema = new schema({
         },
         date: {
             type: Date,
-            required: true,
             validate: [isDate, 'Invalid format in date of the foul! Please insert a valid date!'],
         }
     }],
@@ -48,4 +47,4 @@ let staffSchema = new schema({
 });
 
 
-module.exports = mongoose.model('Staff', staffSchema);
+module.exports = mongoose.model('Staff', StaffSchema);

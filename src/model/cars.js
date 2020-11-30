@@ -1,8 +1,8 @@
-const schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
 const {isDate} = require('validator');
 const Client = require('./clients');
 
-let carsSchema = new schema({
+let CarsSchema = new mongoose.Schema({
     client: {
         type: mongoose.Types.ObjectId,
         required: true,
@@ -23,7 +23,7 @@ let carsSchema = new schema({
     discount: {type: Number},
 }, {timestamp: true});
 
-carsSchema.pre('save', async function (next) {
+CarsSchema.pre('save', async function (next) {
     let {_id: id, client: clientId} = this;
 
     await Client.findByIdAndUpdate(clientId, {'$push': {'services': id}}).catch(e => next(e));
@@ -31,4 +31,4 @@ carsSchema.pre('save', async function (next) {
     next();
 });
 
-module.exports = mongoose.model("Cars", carsSchema);
+module.exports = mongoose.model("Cars", CarsSchema);
