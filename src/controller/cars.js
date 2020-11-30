@@ -1,3 +1,5 @@
+const Cars = require('../model/cars');
+
 module.exports = {
     create: async (req, res) => {
 

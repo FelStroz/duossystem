@@ -12,7 +12,7 @@ let staffSchema = new schema({
         type: Date,
         validate: [isDate, 'Invalid format in birthday! Please insert a valid date!'],
     },
-    spending: {
+    spending: [{
         value: {
             type: Number,
             default: 0,
@@ -20,8 +20,8 @@ let staffSchema = new schema({
         reason: {
             type: String,
         }
-    },
-    fouls: {
+    }],
+    fouls: [{
         number: {
             type: Number,
             default: 0,
@@ -31,7 +31,7 @@ let staffSchema = new schema({
             required: true,
             validate: [isDate, 'Invalid format in date of the foul! Please insert a valid date!'],
         }
-    },
+    }],
     phone: {
         type: Number,
         validate: [isMobilePhone('pt-BR'), 'Invalid phone number'],

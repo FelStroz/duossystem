@@ -24,11 +24,18 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         maxlength: 20,
     },
+    isAdmin: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     creationDate: {
         type: Date,
         default: Date.now
     }
 });
+
+userSchema.index({ email: 1 }, { unique: true });
 
 userSchema.pre('save', function (next) {
     let user = this;
@@ -48,7 +55,7 @@ userSchema.pre('save', function (next) {
     });
 });
 
-userSchema.pre('findOneAndUpdate', function (next) {
+userSchema.pre('findByIdAndUpdate', function (next) {
     let user = this._update;
 
     // generate a salt
