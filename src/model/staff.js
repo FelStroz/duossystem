@@ -1,7 +1,7 @@
 const schema = require('mongoose').Schema;
 const {isDate, isMobilePhone} = require('validator');
 
-let staffSchema = new schema({
+let StaffSchema = new schema({
     name: {
         type: String,
         required: true,
@@ -12,7 +12,7 @@ let staffSchema = new schema({
         type: Date,
         validate: [isDate, 'Invalid format in birthday! Please insert a valid date!'],
     },
-    spending: {
+    spending: [{
         value: {
             type: Number,
             default: 0,
@@ -20,18 +20,17 @@ let staffSchema = new schema({
         reason: {
             type: String,
         }
-    },
-    fouls: {
+    }],
+    fouls: [{
         number: {
             type: Number,
             default: 0,
         },
         date: {
             type: Date,
-            required: true,
             validate: [isDate, 'Invalid format in date of the foul! Please insert a valid date!'],
         }
-    },
+    }],
     phone: {
         type: Number,
         validate: [isMobilePhone('pt-BR'), 'Invalid phone number'],
@@ -48,4 +47,4 @@ let staffSchema = new schema({
 });
 
 
-module.exports = mongoose.model('Staff', staffSchema);
+module.exports = mongoose.model('Staff', StaffSchema);

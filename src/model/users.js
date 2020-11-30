@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {isEmail} = require('validator');
 const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -24,13 +24,20 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         maxlength: 20,
     },
+    isAdmin: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     creationDate: {
         type: Date,
         default: Date.now
     }
 });
 
-userSchema.pre('save', function (next) {
+UserSchema.index({ email: 1 }, { unique: true });
+
+UserSchema.pre('save', function (next) {
     let user = this;
 
     // generate a salt
@@ -48,9 +55,12 @@ userSchema.pre('save', function (next) {
     });
 });
 
-userSchema.pre('findOneAndUpdate', function (next) {
+UserSchema.pre('findByIdAndUpdate', function (next) {
     let user = this._update;
-
+    if (user.name === "" || !user.name)
+        return next(new Error('The name must not be empty'));
+    if (user.email === "" || !user.email)
+        return next(new Error('The email must not be empty'));
     // generate a salt
     if (user.password) {
         if (user.password.length < 6) return next(new Error('The password must be at least 6 characters'));
@@ -71,5 +81,4 @@ userSchema.pre('findOneAndUpdate', function (next) {
     }
 });
 
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Users', UserSchema);

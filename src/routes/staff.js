@@ -2,6 +2,10 @@ let express = require('express');
 let routes = express.Router();
 let staff = require('../controller/staff');
 
+const userMiddleware = require('../middleware/auth');
+
+routes.use(userMiddleware);
+
 routes.post('/', staff.create);
 routes.get('/:id', staff.getOne);
 routes.get('/', staff.getList);
