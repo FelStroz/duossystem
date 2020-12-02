@@ -1,5 +1,6 @@
 const Cars = require('../model/cars');
 const List = require('../model/getList');
+const Clients = require('../model/clients');
 
 module.exports = {
     create: async (req, res) => {
@@ -43,13 +44,7 @@ module.exports = {
         if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
         Cars.findByIdAndDelete(req.params.id).then(cars => {
             if (!cars) return res.json({error: 'Not Found'});
-            // if (client.services[0] !== undefined)
-            //     client.services.map(service =>
-            //         Cars.findByIdAndDelete(service._id)
-            //             .then(client => { if (!client) return res.json({error: 'Not Found'})})
-            //             .catch((e) => {return res.json({error: e})})
-            //     )
             return res.json({status: "deleted", data: cars});
-        }).catch(e => res.json({error: e}));
+        }).catch(e => res.json({error: e.message}));
     },
 }

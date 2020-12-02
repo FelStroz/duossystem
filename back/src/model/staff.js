@@ -40,6 +40,11 @@ let StaffSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    status: {
+      type: String,
+      required: true,
+      default: 'Ativo'
+    },
     creationDate: {
         type: Date,
         default: Date.now
