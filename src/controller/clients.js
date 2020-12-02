@@ -14,7 +14,7 @@ module.exports = {
     getOne: async (req, res) => {
         if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
         Client.findById(req.params.id).populate('services').then(client => {
-            if (!Client) return res.json({error: 'Not Found'});
+            if (!client) return res.json({error: 'Not Found'});
             return res.json({status: "finded", data: client});
         }).catch((e) => res.json({error: e}));
     },
@@ -57,7 +57,7 @@ module.exports = {
             if (client.services[0] !== undefined)
                 client.services.map(service =>
                     Cars.findByIdAndDelete(service._id)
-                        .then(client => { if (!client) return res.json({error: 'Not Found'})})
+                        .then(car => { if (!car) return res.json({error: 'Not Found'})})
                         .catch((e) => {return res.json({error: e})})
                 )
             return res.json({status: "deleted", data: client});
