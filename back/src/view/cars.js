@@ -1,0 +1,77 @@
+module.exports = {
+    created: ({date, service, licensePlate, protocol}, status, res) => {
+        res.status(201).json({
+            status: status,
+            data: {
+                protocol,
+                service,
+                licensePlate,
+                date
+            }
+        });
+    },
+    showList: (list, total, res) => {
+        res.status(200).json({
+            data: list.map((service) => {
+                return one(service).data
+            }),
+            total
+        });
+    },
+    showOne: (service, res) => {
+        res.status(200).json(one(service));
+    },
+    showUpdated: (service, status, res) => {
+        res.status(200).json({
+            status: status,
+            data: one(service).data
+        });
+    },
+    showDeleted: ({_id}, status, res) => {
+        res.status(200).json({
+            status: status,
+            data: {
+                id: _id
+            }
+        });
+    },
+    error: (error = {}, code, status, res) => {
+        let {message, _message} = error;
+        res.status(code).json({
+            status: status,
+            error: {
+                message: _message,
+                completeMessage: message
+            }
+        });
+    },
+    message: (status, message, res) => {
+        res.status(200).json({
+            feedback: {
+                status: status,
+                message: message
+            }
+        });
+    },
+};
+
+function one({_id: id, client, date, service, paymentMethod, status, licensePlate, carBrand, protocol, color, observation, discount, createdAt, updatedAt}) {
+    return {
+        data: {
+            id,
+            client,
+            date,
+            service,
+            paymentMethod,
+            status,
+            licensePlate,
+            carBrand,
+            protocol,
+            color,
+            observation,
+            discount,
+            createdAt,
+            updatedAt,
+        }
+    }
+}

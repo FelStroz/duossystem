@@ -17,11 +17,11 @@ let CarsSchema = new mongoose.Schema({
     status: {type: String, default: 'Em aberto'},
     licensePlate: {type: String, uppercase: true, required: true},
     carBrand: {type: String, required: true},
-    protocol: {type: String, required: true},
+    protocol: {type: Number, default: 0},
     color: {type: String},
     observation: {type: String},
     discount: {type: Number},
-}, {timestamp: true});
+}, {timestamps: true});
 
 CarsSchema.pre('save', async function (next) {
     let {_id: id, client: clientId} = this;

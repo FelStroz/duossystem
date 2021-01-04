@@ -17,12 +17,12 @@ module.exports = async (req, res, next) => {
     try {
         let { id, isAdmin } = await promisify(jwt.verify)(token, TOKEN_SECRET);
 
-        if(!id || typeof isAdmin == 'undefined') return res.json({ error: 'unauthorized' });
+        if(!id || typeof isAdmin == 'undefined') return res.status(403).json({ error: 'unauthorized' });
 
         Users.findById(id).then(users => {
-            if(!users) return res.json({ error: 'Not Found' });
+            if(!users) return res.status(404).json({ error: 'Not Found' });
             req.users = { id, isAdmin };
             next();
         }).catch((e) => res.json({ error: e }));
-    } catch (err) {return res.json({ error: 'unauthorized' })}
+    } catch (err) {return res.status(403).json({ error: 'unauthorized' })}
 };

@@ -1,48 +1,57 @@
-import React from 'react'
-import {Edit, SimpleForm, TextInput, required, Toolbar} from 'react-admin'
-import BackButton from "../BackButton/BackButton";
-import {useMediaQuery} from "@material-ui/core";
+import * as React from "react";
+import {
+  Edit,
+  SimpleForm,
+  TextInput,
+  Toolbar,
+  SaveButton,
+  DeleteButton,
+  required,
+  BooleanInput,
+} from 'react-admin';
 import {makeStyles} from '@material-ui/core/styles';
+import BackButton from "../BackButton";
+import {useMediaQuery} from "@material-ui/core";
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
+
+const UserName = ({record}) => {
+  return <span>Editar Usuário {record.name}</span>;
+};
 
 const useStyles = makeStyles({
-    toolbar: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 });
 
-const TopToolBar = props => (
-    <Toolbar {...props} classes={useStyles()}>
-        <BackButton
-            color='secondary'
-        >
-            Voltar
-        </BackButton>
-    </Toolbar>
+const CustomToolbar = props => (
+  <Toolbar {...props} classes={useStyles()}>
+    <SaveButton label="Salvar" submitOnEnter={true}/>
+    <DeleteButton resource="users" undoable={true}/>
+  </Toolbar>
 );
 
-const UserTitle = ({record}) => {
-
-return <span>Editando {record.nome}</span> //retornando um componente html
-
+const TopToolBar = props => (
+  <Toolbar {...props} classes={useStyles()}>
+    <BackButton
+      color='secondary'
+    >
+      Voltar
+    </BackButton>
+  </Toolbar>
+);
+export const UserEdit = ({ permissions, ...props }) => {
+  const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
+  return (
+    <Edit title={<UserName/>} actions={(isSmall)? <BackButton color='secondary'>Voltar</BackButton>
+      : <TopToolBar/>} {...props}>
+      <SimpleForm redirect="list" toolbar={<CustomToolbar/>}>
+        <TextInput label="Nome" source="name" validate={[required()]}/>
+        <TextInput source="email" validate={[required()]}/>
+        {permissions === "true" && <BooleanInput label="Administrador" source="isAdmin" />}
+      </SimpleForm>
+    </Edit>
+  );
 }
-
-const UserEdit = (props) => {
-    const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
-    return(
-
-    <Edit title= {<UserTitle/>} actions={(isSmall)? <BackButton color='secondary'>Voltar</BackButton>
-        : <TopToolBar/>}{...props}>
-
-            <SimpleForm>
-
-                <TextInput label="Nome" source='nome' validate={[required()]}/>
-                <TextInput label="Email" source='email' validate={[required()]}/>
-
-            </SimpleForm>
-
-        </Edit>
-    )
-}
-
-export default UserEdit

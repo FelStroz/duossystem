@@ -14,7 +14,7 @@ let ClientSchema = new mongoose.Schema({
     firstTime: {
         type: Date,
         default: Date.now
-    }
-}, {timestamp: true, _id: false});
+    },
+}, {timestamps: true});
 
 module.exports = mongoose.model("Client", ClientSchema);

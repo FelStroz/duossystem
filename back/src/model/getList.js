@@ -1,13 +1,15 @@
 module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
     let { pagination, sort, filter: filters, populate } = queryData;
 
-    try { pagination = JSON.parse(pagination) } catch (e) {};
-    try { sort = JSON.parse(sort) } catch (e) {};
-    try { filters = JSON.parse(filters) } catch (e) {};
+    try { pagination = JSON.parse(pagination) } catch (e) { if(!pagination) pagination = {} };
+    try { sort = JSON.parse(sort) } catch (e) { if(!sort) sort = {} };
+    try { filters = JSON.parse(filters) } catch (e) { if(!filters) filters = {} };
 
     let { page = 1, perPage = 0 } = pagination;
-    let { field , order } = sort;
+    let { field = 'createdAt', order } = sort;
     let { q, qField } = filters;
+
+    if (field === '') field = 'createdAt';
 
     let query = q ? {
         [qField || qFieldDefault]: {
@@ -22,7 +24,7 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
     for(let filter in filters) {
         query = {
             ...query,
-            [filter]: filters[filter]
+            [filter]: (typeof filters[filter] === 'string')? { $regex: filters[filter], $options: "i" }: filters[filter]
         };
     }
 

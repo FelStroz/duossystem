@@ -1,49 +1,53 @@
 const Staff = require('../model/staff');
 const List = require('../model/getList');
+const views = require('../view/staff');
+const {validateUpdate} = require('../middleware/validation');
 
 module.exports = {
     create: async (req, res) => {
-        if(!req.users.isAdmin) return res.json({ error: 'unauthorized' });
-        let user = new Staff(req.body);
-        user.save().then(staff => {
-            return res.json({status: "created", data: staff});
-        }).catch((e) => res.json({error: e.message}));
+        let {name, birthday, spending, fouls, phone, profession, actualStatus} = req.body;
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+        let staff = new Staff({name, birthday, spending, fouls, phone, profession, actualStatus});
+        staff.save().then(staff => {
+            return views.created(staff, "Created", res);
+        }).catch((e) => views.error(e, 500, "error", res));
     },
     getOne: async (req, res) => {
-        if(!req.users.isAdmin) return res.json({ error: 'unauthorized' });
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         Staff.findById(req.params.id).then(staff => {
-            if(!staff) return res.json({ error: 'Not Found' });
-            return res.json({status: "finded", data: staff});
-        }).catch((e) => res.json({error: e}));
+            if (!staff) return views.error({"message": "Trabalhador não encontrado!"}, 404, "Not Found", res);
+            return views.showOne(staff, res);
+        }).catch((e) => views.error(e, 500, "error", res));
     },
     getList: async (req, res) => {
-        if(!req.users.isAdmin) return res.json({ error: 'unauthorized' });
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         List(Staff, req.query).then(({data, total}) =>
-            res.status(200).json({
-                data: data.map((item) => item),
-                total
-            })).catch((e) => res.json({error: e}));
+            views.showList(data, total, res)
+        ).catch((e) => views.error(e, 500, "error", res));
     },
     update: async (req, res) => {
         let {id} = req.params;
-        if(!req.users.isAdmin) return res.json({ error: 'unauthorized' });
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+
+        await validateUpdate(req.body);
+
         Staff.findByIdAndUpdate(
             id,
             req.body,
-            { new: true }
-        ).then(async user => {
-            if(!user) return res.json({ error: 'Not Found' });
+            {new: true}
+        ).then(async staff => {
+            if (!staff) return views.error({"message": "Trabalhador não encontrado!"}, 404, "Not Found", res);
             for (let position in req.body) {
-                user[position] = req.body[position];
+                staff[position] = req.body[position];
             }
-            return res.json({status: "updated", data: user});
-        }).catch(e => res.json({error: e}));
+            return views.showUpdated(staff,"Updated", res);
+        }).catch(e => views.error(e, 500, "error", res));
     },
     delete: async (req, res) => {
-        if(!req.users.isAdmin) return res.json({ error: 'unauthorized' });
-        Staff.findByIdAndDelete(req.params.id).then(user => {
-            if(!user) return res.json({ error: 'Not Found' });
-            return res.json({status: "deleted", data: user});
-        }).catch(e => res.json({error: e}));
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+        Staff.findByIdAndDelete(req.params.id).then(staff => {
+            if (!staff) return views.error({"message": "Trabalhador não encontrado!"}, 404, "Not Found", res);
+            return views.showDeleted(staff, "Deleted", res);
+        }).catch(e => views.error(e, 500, "error", res));
     },
 }
