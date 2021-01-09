@@ -11,7 +11,7 @@ import {
     ChipField,
     Datagrid,
     DateField,
-    ExportButton, Toolbar,
+    ExportButton,
 } from 'react-admin';
 import jsonExport from 'jsonexport';
 import BackButton from "../BackButton";
@@ -21,13 +21,13 @@ const exporter = (services) => {
         const {_id, updatedAt, createdAt, __v, client, ...servicesForExport} = service;
         servicesForExport.Nome = services.name;
         servicesForExport.Protocolo = service.protocol;
-        delete service.service[0]._id;
         servicesForExport.Serviço = service.service[0].name;
         servicesForExport.Preço = service.service[0].price;
         servicesForExport.Marca = service.carBrand;
         servicesForExport.Placa = service.licensePlate;
         servicesForExport.Cor = service.color;
-        servicesForExport.Desconto = service.service[0].price * (service.discount / 100);
+        servicesForExport.Desconto = service.discount;
+        servicesForExport.Total = 'R$ ' + `${service.service[0].price - service.discount}` + ',00';
         servicesForExport.Data = `${new Date(service.date).toLocaleDateString()}`;
         servicesForExport.Observação = (service.observation !== "") ? service.observation : "Sem observação";
         servicesForExport.Método = service.paymentMethod;
@@ -48,7 +48,7 @@ const exporter = (services) => {
         return servicesForExport;
     })
     jsonExport(servicesForExport, {
-        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Preço', 'Marca', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Desconto'],
+        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Marca', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
         rowDelimiter: ';',
     }, (err, csv) => {
         let link = window.document.createElement("a");
@@ -86,7 +86,8 @@ const FieldChipPrice = ({record}) => {
         color: 'black',
         justifyContent: 'center',
         alignItems: 'center',
-    }}>R$ {parseFloat(record.price)}</span>
+        marginTop: '3px'
+    }}>R$ {record.price}</span>
 };
 
 const FieldChipDiscount = ({record}) => {
@@ -95,22 +96,49 @@ const FieldChipDiscount = ({record}) => {
         backgroundColor: 'rgb(224, 224, 224)',
         borderRadius: '16px',
         height: '25px',
-        width: '40px',
+        width: '50px',
         padding: '3px',
         color: 'black',
         justifyContent: 'center',
         alignItems: 'center',
-    }}>{parseFloat(record.discount)}%</span>
+    }}>R$ {record.discount}</span>
+};
+
+const TotalSpentField = ({record}) => {
+    let total = 0;
+    record.services.map((service) => {
+        if (service.status !== "Em aberto" && service.status !== "Atrasado"){
+            service.service.map((price) => {
+                total += price.price;
+            })
+        total -= service.discount;
+        }
+    })
+    return <span>R$ {total}</span>
+};
+
+const TotalDebitField = ({record}) => {
+    let total = 0;
+    record.services.map((service) => {
+        if (service.status === "Em aberto" || service.status === "Atrasado"){
+            service.service.map((price) => {
+                total += price.price;
+            })
+            total -= service.discount;
+        }
+    })
+    return <span>R$ {total}</span>
 };
 
 const MostRecentDate = ({record}) => {
     if (record.services[0]) {
         record.services.sort(function (a, b) {
-            let c = new Date(a.date).toLocaleDateString();
-            let d = new Date(b.date).toLocaleDateString();
-            return c - d;
+            let c = new Date(a.date);
+            let d = new Date(b.date);
+
+            return d - c;
         });
-        let mostRecentDate = new Date(record.services[0].date).toLocaleDateString();
+        let mostRecentDate = `${record.services[0].date.substring(8, 10)}/${record.services[0].date.substring(5, 7)}/${record.services[0].date.substring(0, 4)}`;
         return <span>{mostRecentDate}</span>
     } else
         return <h2>Não há nenhum serviço para este cliente ainda!</h2>
@@ -118,7 +146,7 @@ const MostRecentDate = ({record}) => {
 };
 
 const ClientShowRowStyle = (record, index) => ({
-    borderLeftColor: record.status === "Faturado" ? 'rgba(92,255,64,0.38)' : record.status === "Atrasado" ? 'rgba(255,72,72,0.38)' : 'rgba(255,255,15,0.79)',
+    borderLeftColor: record.status === "Faturado" ? 'rgb(66,94,255)' : record.status === "Atrasado" ? 'rgba(255,72,72,0.38)' : record.status === "Em aberto" ? 'rgba(255,255,15,0.79)' : 'rgba(92,255,64,0.38)',
     borderLeftWidth: 5,
     borderLeftStyle: 'solid',
 });
@@ -127,9 +155,9 @@ export const ClientShow = (props) => (
     <Show actions={<ClientShowActions/>} {...props}>
         <SimpleShowLayout>
             <ArrayField label="Serviços" source="services">
-                <Datagrid style={{marginLeft: '35px'}} rowStyle={ClientShowRowStyle}>
+                <Datagrid rowStyle={ClientShowRowStyle}>
                     <TextField label="Status" source="status"/>
-                    <ArrayField label="Tipo de Serviço" source="service">
+                    <ArrayField label="Serviços" source="service">
                         <SingleFieldList linkType={false}>
                             <ChipField source="name"/>
                         </SingleFieldList>
@@ -142,7 +170,7 @@ export const ClientShow = (props) => (
                     <TextField label="Placa" source="licensePlate"/>
                     <TextField label="Marca" source="carBrand"/>
                     <TextField label="Cor" source="color"/>
-                    <FieldChipDiscount label="Desconto" source="licensePlate"/>
+                    <FieldChipDiscount label="Desconto" source="discount"/>
                     <DateField label="Data" source="date"/>
                     <TextField label="Método" source="paymentMethod"/>
                 </Datagrid>
@@ -161,6 +189,34 @@ export const ClientShow = (props) => (
                 Último Comparecimento
             </p>
             <MostRecentDate/>
+            <p style={{
+                color: 'rgba(0, 0, 0, 0.54)',
+                padding: '0',
+                fontSize: '0.76rem',
+                fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                fontWeight: 400,
+                lineHeight: 1,
+                letterSpacing: '0.00938em',
+                marginTop: '15px',
+                marginBottom: '10px',
+            }}>
+                Total Devido
+            </p>
+            <TotalDebitField/>
+            <p style={{
+                color: 'rgba(0, 0, 0, 0.54)',
+                padding: '0',
+                fontSize: '0.76rem',
+                fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                fontWeight: 400,
+                lineHeight: 1,
+                letterSpacing: '0.00938em',
+                marginTop: '15px',
+                marginBottom: '10px',
+            }}>
+                Total Pago
+            </p>
+            <TotalSpentField/>
         </SimpleShowLayout>
     </Show>
 );

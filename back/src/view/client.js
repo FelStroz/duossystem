@@ -54,7 +54,7 @@ module.exports = {
     },
 };
 
-function one({_id: id, name, birthday, instagram, phone, address, services, firstTime, updatedAt}) {
+function one({_id: id, name, birthday, instagram, phone, address, services, totalServices, firstTime, updatedAt}) {
     return {
         data: {
             id,
@@ -64,6 +64,7 @@ function one({_id: id, name, birthday, instagram, phone, address, services, firs
             phone,
             address,
             services,
+            totalServices,
             firstTime,
             updatedAt,
         }

@@ -18,23 +18,24 @@ import {StaffCreate} from "../../components/Staff/staffCreate";
 import {StaffEdit} from "../../components/Staff/staffEdit";
 import {StaffList} from "../../components/Staff/staffList";
 import CommentCreate from "../../components/Services/servicesCreate";
-
-import {PurchasesList} from "../../components/Purchases/purchasesList";
-import {ProductList} from "../../components/Products/productList";
-import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
-import {ProductCreate} from "../../components/Products/productCreate";
-import {ProductEdit} from "../../components/Products/productEdit";
+import {ServiceList} from "../../components/Services/servicesList";
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import customRoutes from '../../utils/custom/customRoutes';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 
 export default function AdminPage() {
     return (
         <Admin title="Duos" authProvider={authProvider} dataProvider={dataProvider}
                i18nProvider={i18nProvider} catchAll={NotFound} layout={CustomLayout}
-               initialState={initialState}
+               initialState={initialState} customRoutes={customRoutes}
         >
             {
                 permission => [
+                    <Resource options={{ label: 'Novo Serviço' }} name="create-service" icon={AddToQueueIcon}/>,
                     <Resource options={{ label: 'Clientes' }} name="clients" edit={ClientEdit} show={ClientShow} list={ClientList} icon={PeopleIcon}/>,
-                    <Resource options={{ label: 'Serviços' }} name="cars" create={CommentCreate} icon={PeopleIcon}/>,
+                    <Resource options={{ label: 'Finanças' }} name="finantial" icon={LocalAtmIcon}/>,
+                    <Resource options={{ label: 'Serviços' }} name="cars" list={ServiceList} create={CommentCreate} icon={DriveEtaIcon}/>,
                     <Resource options={{ label: 'Staff' }} name="staff" list={StaffList} edit={StaffEdit} create={StaffCreate} icon={AssignmentIndIcon} />,
                     (permission === "true" ?
                         <Resource options={{ label: 'Usuários' }} name="users" list={UserList} edit={UserEdit} create={UserCreate} icon={AccountCircleIcon}/>
@@ -43,11 +44,6 @@ export default function AdminPage() {
 
                 ]
             }
-            {/*<Resource options={{ label: 'Clientes' }} name="clients" list={ClientList} icon={PeopleIcon}/>*/}
-
-            {/*<Resource options={{ label: 'Compras' }} name="purchases" list={PurchasesList} icon={ShoppingBasketIcon}/>*/}
-            {/*<Resource options={{ label: 'Produtos' }} name="products" list={ProductList} edit={ProductEdit} create={ProductCreate} icon={DynamicFeedIcon} />*/}
-
         </Admin>
     )
 }

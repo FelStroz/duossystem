@@ -6,7 +6,12 @@ import {
     SimpleForm,
     required,
     SelectInput,
-    NumberInput, ArrayInput, SimpleFormIterator, minValue, AutocompleteInput, ReferenceInput
+    NumberInput,
+    ArrayInput,
+    SimpleFormIterator,
+    minValue,
+    AutocompleteInput,
+    ReferenceInput,
 } from 'react-admin';
 import {useLocation} from 'react-router';
 // import PostReferenceInput from './PostReferenceInput';
@@ -20,6 +25,7 @@ const choices = [
     {id: 'Crédito', name: 'Crédito'},
     {id: 'Débito', name: 'Débito'},
     {id: 'Dinheiro', name: 'Dinheiro'},
+    {id: 'Faturado', name: 'Faturado'}
 ];
 
 const services = [
@@ -28,7 +34,7 @@ const services = [
     {id: 'Vidrificação', name: 'Vidrificação'},
 ];
 
-const CommentCreate = props => {
+const ServicesCreate = props => {
     // Read the post_id from the location
     const location = useLocation();
     const id =
@@ -38,15 +44,20 @@ const CommentCreate = props => {
     const redirect = id ? `/clients/${id}/show` : false;
 
     return (
-        <Create {...props}>
-            <SimpleForm
-                defaultValue={{id}}
-                redirect={redirect}
-            >
+        <div>
 
-                <ReferenceInput label="Placa do Carro" source="id" reference="cars" allowEmpty>
-                    <AutocompleteInput optionText="licensePlate" />
-                </ReferenceInput>
+
+        {/*// <Create {...props}>*/}
+        {/*//     <SimpleForm*/}
+        {/*//         defaultValue={{id}}*/}
+        {/*//         redirect={redirect}*/}
+        {/*//     >*/}
+        {/*//         <ReferenceInput label="Placa do Carro" source="id" reference="cars" allowEmpty>*/}
+        {/*//             <AutocompleteInput optionText="licensePlate" />*/}
+        {/*//         </ReferenceInput>*/}
+                {/*<ReferenceInput label="Cliente" source="id" reference="clients" allowEmpty>*/}
+                {/*    <AutocompleteInput optionText="name" />*/}
+                {/*</ReferenceInput>*!/*/}
                 {/*<AutocompleteInput*/}
                 {/*    source="licensePlate"*/}
                 {/*    reference="cars"*/}
@@ -81,41 +92,42 @@ const CommentCreate = props => {
                 {/*</div>*/}
                 {/*    <TextInput label="Marca" source="carBrand"  validate={[required()]} />*/}
                 {/*    <TextInput label="Cor" source="color" validate={[required()]} style={{marginLeft:'50px'}} />*/}
-                <SelectInput label="Método de Pagamento" source="paymentMethod" choices={choices}
-                             optionText="name" validate={[required()]}/>
-                <DateInput label="Data do Atendimento" source="date" validate={[required()]}
-                />
-                <p
-                    style={{
-                        color: 'rgba(0, 0, 0, 0.54)',
-                        padding: 0,
-                        fontSize: '0.85rem',
-                        fontFamily: "Helvetica",
-                        fontWeight: 400,
-                        lineHeight: 1,
-                        letterSpacing: '0.00938em',
-                        marginBottom: '10px',
-                        marginTop: '10px'
-                    }}
-                >
-                    Serviços
-                </p>
-                <ArrayInput label=" " source="service">
-                    <SimpleFormIterator addButton={<LibraryAddIcon cursor={'pointer'}/>}
-                                        removeButton={<DeleteForeverIcon cursor={'pointer'}/>}>
-                        <NumberInput label="Valor" source="price" validate={[required(), minValue(0)]} min={0}
-                                     InputProps={{
-                                         startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                                     }}/>
-                        <SelectInput label="Serviços" source="service" choices={services}
-                                     optionText="name" validate={[required()]}/>
-                    </SimpleFormIterator>
-                </ArrayInput>
-                <TextInput label="Observação" source="observation" validate={[required()]}/>
-                <NumberInput min={0} max={100} label="Desconto" source="discount" validate={[required()]} />
-            </SimpleForm>
-        </Create>
+    {/*//             <SelectInput label="Método de Pagamento" source="paymentMethod" choices={choices}*/}
+    {/*//                          optionText="name" validate={[required()]}/>*/}
+    {/*//             <DateInput label="Data do Atendimento" source="date" defaultValue={new Date()} validate={[required()]}*/}
+    {/*//             />*/}
+    {/*//             <p*/}
+    {/*//                 style={{*/}
+    {/*//                     color: 'rgba(0, 0, 0, 0.54)',*/}
+    {/*//                     padding: 0,*/}
+    {/*//                     fontSize: '0.85rem',*/}
+    {/*//                     fontFamily: "Helvetica",*/}
+    {/*//                     fontWeight: 400,*/}
+    {/*//                     lineHeight: 1,*/}
+    {/*//                     letterSpacing: '0.00938em',*/}
+    {/*//                     marginBottom: '10px',*/}
+    {/*//                     marginTop: '10px'*/}
+    {/*//                 }}*/}
+    {/*//             >*/}
+    {/*//                 Serviços*/}
+    {/*//             </p>*/}
+    {/*//             <ArrayInput label=" " source="service">*/}
+    {/*//                 <SimpleFormIterator addButton={<LibraryAddIcon cursor={'pointer'}/>}*/}
+    {/*//                                     removeButton={<DeleteForeverIcon cursor={'pointer'}/>}>*/}
+    {/*//                     <SelectInput label="Serviços" source="service" choices={services}*/}
+    {/*//                                  optionText="name" validate={[required()]}/>*/}
+    {/*//                     <NumberInput label="Valor" source="price" validate={[required(), minValue(0)]} min={0}*/}
+    {/*//                                  InputProps={{*/}
+    {/*//                                      startAdornment: <InputAdornment position="start">R$</InputAdornment>,*/}
+    {/*//                                  }}/>*/}
+    {/*//                 </SimpleFormIterator>*/}
+    {/*//             </ArrayInput>*/}
+    {/*//             <TextInput label="Observação" source="observation" validate={[required()]}/>*/}
+    {/*//             <NumberInput min={0} label="Desconto" source="discount" validate={[required(), minValue(0)]} />*/}
+    {/*//         </SimpleForm>*/}
+    {/*//     </Create>*/}
+        </div>
     );
 };
 
-export default CommentCreate;
+export default ServicesCreate;

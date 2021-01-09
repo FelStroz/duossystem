@@ -107,7 +107,7 @@ export const ClientList = props => {
             ) : (
                 <Datagrid rowClick="edit">
                     <TextField label="Nome Completo" source="name"/>
-                    <BirthdayField style={{}} label="Data de Nascimento" source="birthday"/>
+                    <BirthdayField label="Data de Nascimento" source="birthday"/>
                     <InstagramField label="Instagram" source="instagram"/>
                     <TextField label="Telefone" source="phone"/>
                     <TextField label="Endereço" source="address"/>

@@ -28,14 +28,6 @@ module.exports = {
     update: async (req, res) => {
         let {id} = req.params;
 
-        // let {services} = req.body
-        // if (services[0] !== undefined)
-        //     services.map(services =>
-        //         Cars.findByIdAndUpdate(services._id, services, {new: true})
-        //             .then(service => { if (!service) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);})
-        //             .catch((e) => {return res.json({error: e})})
-        //     )
-
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         Client.findByIdAndUpdate(
             id,

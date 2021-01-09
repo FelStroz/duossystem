@@ -9,7 +9,7 @@ export default {
             resource = 'clients?populate=services'
         if(resource === 'cars' || resource === undefined )
             resource = 'cars?populate=client'
-        console.log(params);
+        // console.log(params);
         return new Promise((resolve, reject) => {
             axios.get(`${config.backUrl}/${resource}`, {
                 headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`},

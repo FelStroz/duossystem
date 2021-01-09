@@ -16,7 +16,7 @@ module.exports = {
     },
     getOne: async (req, res) => {
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
-        Cars.findById(req.params.id).then(car => {
+        Cars.findById(req.params.id).populate('client').then(car => {
             if (!car) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
             return views.showOne(car, res);
         }).catch((e) => views.error(e, 500, "error", res));
@@ -34,7 +34,7 @@ module.exports = {
             id,
             req.body,
             {new: true}
-        ).then(async cars => {
+        ).populate('client').then(async cars => {
             if (!cars) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
 
             for (let position in req.body)

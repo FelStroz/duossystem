@@ -11,10 +11,21 @@ let ClientSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Cars'
     }],
+    totalServices: {
+      type: Number,
+      default: 0,
+    },
     firstTime: {
         type: Date,
         default: Date.now
     },
 }, {timestamps: true});
+
+ClientSchema.pre('findOneAndUpdate', async function (next) {
+    let client = this._update;
+
+    console.log(client);
+
+});
 
 module.exports = mongoose.model("Client", ClientSchema);
