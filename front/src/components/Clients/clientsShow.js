@@ -15,6 +15,7 @@ import {
 } from 'react-admin';
 import jsonExport from 'jsonexport';
 import BackButton from "../BackButton";
+import SimpleBar from "simplebar-react";
 
 const exporter = (services) => {
     const servicesForExport = services.services.map(service => {
@@ -107,11 +108,11 @@ const FieldChipDiscount = ({record}) => {
 const TotalSpentField = ({record}) => {
     let total = 0;
     record.services.map((service) => {
-        if (service.status !== "Em aberto" && service.status !== "Atrasado"){
+        if (service.status !== "Em aberto" && service.status !== "Atrasado") {
             service.service.map((price) => {
                 total += price.price;
             })
-        total -= service.discount;
+            total -= service.discount;
         }
     })
     return <span>R$ {total}</span>
@@ -120,7 +121,7 @@ const TotalSpentField = ({record}) => {
 const TotalDebitField = ({record}) => {
     let total = 0;
     record.services.map((service) => {
-        if (service.status === "Em aberto" || service.status === "Atrasado"){
+        if (service.status === "Em aberto" || service.status === "Atrasado") {
             service.service.map((price) => {
                 total += price.price;
             })
@@ -152,71 +153,73 @@ const ClientShowRowStyle = (record, index) => ({
 });
 
 export const ClientShow = (props) => (
-    <Show actions={<ClientShowActions/>} {...props}>
-        <SimpleShowLayout>
-            <ArrayField label="Serviços" source="services">
-                <Datagrid rowStyle={ClientShowRowStyle}>
-                    <TextField label="Status" source="status"/>
-                    <ArrayField label="Serviços" source="service">
-                        <SingleFieldList linkType={false}>
-                            <ChipField source="name"/>
-                        </SingleFieldList>
-                    </ArrayField>
-                    <ArrayField label="Preço" source="service">
-                        <SingleFieldList linkType={false}>
-                            <FieldChipPrice/>
-                        </SingleFieldList>
-                    </ArrayField>
-                    <TextField label="Placa" source="licensePlate"/>
-                    <TextField label="Marca" source="carBrand"/>
-                    <TextField label="Cor" source="color"/>
-                    <FieldChipDiscount label="Desconto" source="discount"/>
-                    <DateField label="Data" source="date"/>
-                    <TextField label="Método" source="paymentMethod"/>
-                </Datagrid>
-            </ArrayField>
-            <p style={{
-                color: 'rgba(0, 0, 0, 0.54)',
-                padding: '0',
-                fontSize: '0.76rem',
-                fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
-                fontWeight: 400,
-                lineHeight: 1,
-                letterSpacing: '0.00938em',
-                marginTop: '15px',
-                marginBottom: '10px',
-            }}>
-                Último Comparecimento
-            </p>
-            <MostRecentDate/>
-            <p style={{
-                color: 'rgba(0, 0, 0, 0.54)',
-                padding: '0',
-                fontSize: '0.76rem',
-                fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
-                fontWeight: 400,
-                lineHeight: 1,
-                letterSpacing: '0.00938em',
-                marginTop: '15px',
-                marginBottom: '10px',
-            }}>
-                Total Devido
-            </p>
-            <TotalDebitField/>
-            <p style={{
-                color: 'rgba(0, 0, 0, 0.54)',
-                padding: '0',
-                fontSize: '0.76rem',
-                fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
-                fontWeight: 400,
-                lineHeight: 1,
-                letterSpacing: '0.00938em',
-                marginTop: '15px',
-                marginBottom: '10px',
-            }}>
-                Total Pago
-            </p>
-            <TotalSpentField/>
-        </SimpleShowLayout>
-    </Show>
+    <SimpleBar style={{maxHeight: '100%'}}>
+        <Show actions={<ClientShowActions/>} {...props}>
+            <SimpleShowLayout>
+                <ArrayField label="Serviços" source="services">
+                    <Datagrid rowStyle={ClientShowRowStyle}>
+                        <TextField label="Status" source="status"/>
+                        <ArrayField label="Serviços" source="service">
+                            <SingleFieldList linkType={false}>
+                                <ChipField source="name"/>
+                            </SingleFieldList>
+                        </ArrayField>
+                        <ArrayField label="Preço" source="service">
+                            <SingleFieldList linkType={false}>
+                                <FieldChipPrice/>
+                            </SingleFieldList>
+                        </ArrayField>
+                        <TextField label="Placa" source="licensePlate"/>
+                        <TextField label="Marca" source="carBrand"/>
+                        <TextField label="Cor" source="color"/>
+                        <FieldChipDiscount label="Desconto" source="discount"/>
+                        <DateField label="Data" source="date"/>
+                        <TextField label="Método" source="paymentMethod"/>
+                    </Datagrid>
+                </ArrayField>
+                <p style={{
+                    color: 'rgba(0, 0, 0, 0.54)',
+                    padding: '0',
+                    fontSize: '0.76rem',
+                    fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                    fontWeight: 400,
+                    lineHeight: 1,
+                    letterSpacing: '0.00938em',
+                    marginTop: '15px',
+                    marginBottom: '10px',
+                }}>
+                    Último Comparecimento
+                </p>
+                <MostRecentDate/>
+                <p style={{
+                    color: 'rgba(0, 0, 0, 0.54)',
+                    padding: '0',
+                    fontSize: '0.76rem',
+                    fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                    fontWeight: 400,
+                    lineHeight: 1,
+                    letterSpacing: '0.00938em',
+                    marginTop: '15px',
+                    marginBottom: '10px',
+                }}>
+                    Total Devido
+                </p>
+                <TotalDebitField/>
+                <p style={{
+                    color: 'rgba(0, 0, 0, 0.54)',
+                    padding: '0',
+                    fontSize: '0.76rem',
+                    fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                    fontWeight: 400,
+                    lineHeight: 1,
+                    letterSpacing: '0.00938em',
+                    marginTop: '15px',
+                    marginBottom: '10px',
+                }}>
+                    Total Pago
+                </p>
+                <TotalSpentField/>
+            </SimpleShowLayout>
+        </Show>
+    </SimpleBar>
 );

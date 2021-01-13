@@ -47,3 +47,15 @@ h1, h2 , h3, h4, h5, h6, p, li, ul {
   justify-content: center !important;
   flex-direction: row !important;
 }
+
+.divMarcaCor{
+  width: 60% !important;
+}
+
+.MuiDrawer-paper {
+  width: 300px !important;
+}
+
+.RaAutocompleteInput-container-127{
+  flex-grow: initial !important;
+}

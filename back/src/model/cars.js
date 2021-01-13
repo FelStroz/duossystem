@@ -19,8 +19,8 @@ let CarsSchema = new mongoose.Schema({
     carBrand: {type: String, required: true},
     protocol: {type: Number, default: 0},
     color: {type: String},
-    observation: {type: String},
-    discount: {type: Number},
+    observation: {type: String, default:"Sem observação"},
+    discount: {type: Number , default: 0},
 }, {timestamps: true});
 
 CarsSchema.pre('save', async function (next) {

@@ -6,6 +6,6 @@ routes.use('/clients', require('./clients'));
 routes.use('/cars', require('./cars'));
 routes.use('/login', require('./auth'));
 routes.use('/finantial', require('./finantial'));
-routes.use('/create-service', require('./createService'));
+routes.use('/plates', require('./plates'));
 
 module.exports = routes;

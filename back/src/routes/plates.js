@@ -1,11 +1,11 @@
 let express = require('express');
 let routes = express.Router();
-let service = require('../controller/cars');
+let plates = require('../controller/plates');
 
 const userMiddleware = require('../middleware/auth');
 
 routes.use(userMiddleware);
 
-routes.get('/', service.create);
+routes.get('/', plates.getOne);
 
 module.exports = routes;

@@ -29,8 +29,19 @@ const Menu = ({onMenuClick, logout}) => {
                 />
                 <TextName>{capitalize(completeName)}</TextName>
             </ContainerImage>
-                {resources.map(resource => (
-                    <MenuItem
+                {resources.map(resource => {
+                    if (resource.name === "create-service")
+                        return <MenuItem
+                            key={resource.name}
+                            to={`/${resource.name}/create`}
+                            primaryText={resource.options && resource.options.label || resource.name}
+                            leftIcon={createElement(resource.icon)}
+                            onClick={onMenuClick}
+                            sidebarIsOpen={open}
+                            selected={pathname.includes(resource.name)}
+                        />
+                    else
+                        return <MenuItem
                         key={resource.name}
                         to={`/${resource.name}`}
                         primaryText={resource.options && resource.options.label || resource.name}
@@ -39,7 +50,7 @@ const Menu = ({onMenuClick, logout}) => {
                         sidebarIsOpen={open}
                         selected={pathname.includes(resource.name)}
                     />
-                ))}
+                })}
             </div>
             <div>
                 <LogoutButton>

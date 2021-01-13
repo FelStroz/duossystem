@@ -1,8 +1,8 @@
 module.exports = {
-    created: ({date, service, licensePlate, protocol}, status, res) => {
+    created: ({_id: id, date, service, licensePlate, protocol}, status, res) => {
         res.status(201).json({
-            status: status,
             data: {
+                id,
                 protocol,
                 service,
                 licensePlate,

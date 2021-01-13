@@ -7,8 +7,13 @@ export default {
             resource = 'admin/users'
         if(resource === 'clients')
             resource = 'clients?populate=services'
-        if(resource === 'cars' || resource === undefined )
+        if(resource === 'cars' || resource === undefined)
             resource = 'cars?populate=client'
+        if(resource === 'create-service'){
+            resource = 'cars?populate=client';
+            params.pagination.perPage = 5;
+        }
+
         // console.log(params);
         return new Promise((resolve, reject) => {
             axios.get(`${config.backUrl}/${resource}`, {
@@ -33,6 +38,18 @@ export default {
             populate = '?populate=services'
         if(resource === 'cars')
             populate = '?populate=client'
+        if(resource === 'plates'){
+            populate = `?licensePlate=${params.licensePlate}`
+            return new Promise((resolve, reject) => {
+                axios.get(`${config.backUrl}/${resource}${populate}`, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                    .then((response) => {
+                        resolve(response.data);
+                    })
+                    .catch(e => {
+                        return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
+                    })
+            })
+        }
         return new Promise((resolve, reject) => {
             axios.get(`${config.backUrl}/${resource}/${params.id}/${populate}`, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
                 .then((response) => {
@@ -123,6 +140,8 @@ export default {
     create: (resource, params) => {
         if(resource === 'users')
             resource = 'admin/users'
+        if(resource === 'create-service')
+            resource = 'cars'
         // if(resource === 'products'){
         //     let dados = new FormData();
         //     dados.append('photo', params.data.photo.rawFile);

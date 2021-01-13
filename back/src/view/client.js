@@ -1,8 +1,9 @@
 module.exports = {
-    created: ({name, instagram, firstTime}, status, res) => {
+    created: ({_id: id, name, instagram, firstTime}, status, res) => {
         res.status(201).json({
             status: status,
             data: {
+                id,
                 name,
                 instagram,
                 firstTime

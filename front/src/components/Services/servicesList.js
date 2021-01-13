@@ -125,7 +125,7 @@ export const ServiceList = (props) => {
                 </ArrayField>
                 <TextField label="Placa" source="licensePlate"/>
                 <TextField label="Marca" source="carBrand"/>
-                <TextField label="Cor" source="color"/>
+                {/*<TextField label="Cor" source="color"/>*/}
                 <FieldChipDiscount label="Desconto" source="discount"/>
                 <DateField label="Data" source="date"/>
                 <TextField label="Método" source="paymentMethod"/>

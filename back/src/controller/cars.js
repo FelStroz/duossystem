@@ -1,17 +1,24 @@
 const Cars = require('../model/cars');
 const List = require('../model/getList');
 const Client = require('../model/clients');
+const Plates = require('../model/plates');
 const views = require('../view/cars');
 const {manageProtocol} = require('../middleware/protocol');
 
 module.exports = {
     create: async (req, res) => {
-        let {client, date, service, paymentMethod, licensePlate, carBrand, color, observation, discount} = req.body;
+        let {client, date, service, paymentMethod, licensePlate, carBrand, color, observation, discount, status} = req.body;
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         let protocol = await manageProtocol();
-        let cars = new Cars({client, date, service, paymentMethod, licensePlate, carBrand, protocol, color, observation, discount});
+        let cars = new Cars({client, date, service, paymentMethod, licensePlate, carBrand, protocol, color, observation, discount, status});
+        let plates = new Plates({client, licensePlate});
         cars.save().then(car => {
-            return views.created(car, "Created", res);
+            Plates.findOne({licensePlate: licensePlate}).then((plate) => {
+                if(!plate)
+                    plates.save().then(() => views.created(car, "Created", res)).catch((e) => views.error(e, 500, "error", res));
+                else
+                    views.created(car, "Created", res);
+            }).catch((e) => views.error(e, 500, "error", res));
         }).catch((e) => views.error(e, 500, "error", res));
     },
     getOne: async (req, res) => {
