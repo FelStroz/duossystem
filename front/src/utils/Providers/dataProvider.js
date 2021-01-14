@@ -8,9 +8,14 @@ export default {
         if(resource === 'clients')
             resource = 'clients?populate=services'
         if(resource === 'cars' || resource === undefined)
-            resource = 'cars?populate=client'
+            if(params.filter.timestamp){
+                resource = 'cars?populate=client&timestamp=day'
+                delete params.filter.timestamp;
+            }
+            else
+                resource = 'cars?populate=client'
         if(resource === 'create-service'){
-            resource = 'cars?populate=client';
+            resource = 'cars?populate=client&timestamp=day';
             params.pagination.perPage = 5;
         }
 

@@ -31,6 +31,7 @@ import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SearchIcon from '@material-ui/icons/Search';
 import provider from "../../utils/Providers/dataProvider";
+import PostQuickPreviewButton from "./PostQuickPreviewButton";
 
 const ServicesActions = ({
                              basePath,
@@ -141,14 +142,16 @@ const today = new Date();
 const ServiceCreate = props => {
     let notify = useNotify();
     const [plate, setPlate] = useState("");
+    const [list, setList] = useState(null);
 
     function handleSearchClick() {
         return provider.getOne('plates', {licensePlate: plate.toUpperCase()}).then((data) => {
-            console.log(data);
-            if(data.error){
+            if (data.error) {
                 notify(data.error.completeMessage);
+                setList(null)
                 return data.error.completeMessage;
             }
+            setList(data.data);
             return data.data;
         }).catch(e => {
             console.log(e);
@@ -172,6 +175,9 @@ const ServiceCreate = props => {
                             <TextInput source="licensePlate" label="Placa" validate={[required()]}/>
                             <FormDataConsumer>
                                 {({formData, ...rest}) => formData.licensePlate && handleChange(formData)}
+                            </FormDataConsumer>
+                            <FormDataConsumer>
+                                {({formData, ...rest}) => !formData.licensePlate && setList(null)}
                             </FormDataConsumer>
                             <FormDataConsumer>
                                 {({formData, ...rest}) => (formData.licensePlate && formData.licensePlate.length < 7) &&
@@ -207,48 +213,45 @@ const ServiceCreate = props => {
                                         marginTop: '14px',
                                         marginLeft: '14px',
                                         cursor: 'pointer',
-                                    }} onClick={async () => {
-                                        formData.clientDB = await handleSearchClick();
-                                    }}>
+                                    }} onClick={async () => handleSearchClick()}>
                                         <SearchIcon/>
                                     </div>
                                 }
                             </FormDataConsumer>
                         </div>
-                        <FormDataConsumer>
-                            {({formData, ...rest}) => formData.clientDB?.client &&
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    <p style={{
-                                        color: 'rgba(0, 0, 0, 0.54)',
-                                        padding: '0',
-                                        fontSize: '0.76rem',
-                                        fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
-                                        fontWeight: 400,
-                                        lineHeight: 1,
-                                        letterSpacing: '0.00938em',
-                                        marginTop: '15px',
-                                        marginBottom: '10px',
-                                    }}>
-                                        Cliente
-                                    </p>
-                                    <FieldChipClient record={formData.clientDB.client} />
-                                    <div style={{width: '256px', marginTop: '20px'}}>
-                                        <TextInput label="Marca" source="carBrand" validate={[required()]}/>
-                                        <TextInput label="Cor" source="color" validate={[required()]}/>
-                                        <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
-                                                     optionText="name" validate={[required()]} allowEmpty/>
-                                        <DateInput label="Data do Serviço" source="date" defaultValue={today}
-                                                   validate={[required()]}/>
-                                    </div>
+                        {(list)
+                            ?
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <p style={{
+                                    color: 'rgba(0, 0, 0, 0.54)',
+                                    padding: '0',
+                                    fontSize: '0.76rem',
+                                    fontFamily: ["Roboto", "Helvetica", "Arial", 'sans-serif'],
+                                    fontWeight: 400,
+                                    lineHeight: 1,
+                                    letterSpacing: '0.00938em',
+                                    marginTop: '15px',
+                                    marginBottom: '10px',
+                                }}>
+                                    Cliente
+                                </p>
+                                <div>
+                                    <FieldChipClient record={list.client}/>
+                                    <PostQuickPreviewButton id={list.client._id}/>
                                 </div>
-                            }
-                        </FormDataConsumer>
-                        <FormDataConsumer>
-                            {({
-                                  formData,
-                                  ...rest
-                              }) => formData.clientDB && formData.clientDB === "Placa não cadastrada!" &&
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <TextInput source={"client"} defaultValue={list.client._id} style={{display: 'none'}}/>
+                                <div style={{width: '256px', marginTop: '20px'}}>
+                                    <TextInput label="Marca" source="carBrand" validate={[required()]}/>
+                                    <TextInput label="Cor" source="color" validate={[required()]}/>
+                                    <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
+                                                 optionText="name" validate={[required()]} allowEmpty/>
+                                    <DateInput label="Data do Serviço" source="date" defaultValue={today}
+                                               validate={[required()]}/>
+                                </div>
+                            </div>
+                            :
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <div style={{width: '100%'}}>
                                     <PostReferenceInput
                                         source="id"
                                         reference="clients"
@@ -257,30 +260,30 @@ const ServiceCreate = props => {
                                         perPage={10000}
                                         optionText={"name"}
                                     />
-                                    <div style={{width: '256px'}}>
-                                        <TextInput label="Marca" source="carBrand" validate={[required()]}/>
-                                        <TextInput label="Cor" source="color" validate={[required()]}/>
-                                        <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
-                                                     optionText="name" validate={[required()]} allowEmpty/>
-                                        <DateInput label="Data do Serviço" source="date" defaultValue={today}
-                                                   validate={[required()]}/>
-                                    </div>
-                                </div>}
-                        </FormDataConsumer>
+                                </div>
+                                <FormDataConsumer>
+                                    {({formData, ...rest}) => formData.id &&
+                                        <TextInput source={"client"} defaultValue={formData.id} style={{display: 'none'}}/>}
+                                </FormDataConsumer>
+                                <div style={{width: '256px'}}>
+                                    <TextInput label="Marca" source="carBrand" validate={[required()]}/>
+                                    <TextInput label="Cor" source="color" validate={[required()]}/>
+                                    <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
+                                                 optionText="name" validate={[required()]} allowEmpty/>
+                                    <DateInput label="Data do Serviço" source="date" defaultValue={today}
+                                               validate={[required()]}/>
+                                </div>
+                            </div>
+
+                        }
                         <FormDataConsumer>
                             {({
                                   formData,
                                   ...rest
                               }) => formData.paymentMethod && formData.paymentMethod == "Faturado" &&
                                 <TextInput source="status" defaultValue={"Faturado"} style={{display: 'none'}}/>
-                                }
+                            }
                         </FormDataConsumer>
-                        <FormDataConsumer>
-                            {({
-                                  formData,
-                                  ...rest
-                              }) => <TextInput source={"client"} defaultValue={formData.id} style={{display: 'none'}}/>}
-                                </FormDataConsumer>
                     </FormTab>
                     <FormTab label="Serviços">
                         <p
@@ -309,13 +312,7 @@ const ServiceCreate = props => {
                                              }}/>
                             </SimpleFormIterator>
                         </ArrayInput>
-                        <div className={"divMarcaCor"} style={{
-                            display: 'flex',
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginTop: '15px'
-                        }}>
+                        <div className={"divMarcaCor"}>
                             <TextInput label="Observação" source="observation"/>
                             <NumberInput label="Desconto" min={0} source="discount" validate={[minValue(0)]}
                                          style={{marginLeft: '50px'}}/>

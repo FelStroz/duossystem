@@ -1,5 +1,5 @@
 module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
-    let { pagination, sort, filter: filters, populate } = queryData;
+    let { pagination, sort, filter: filters, populate, timestamp } = queryData;
 
     try { pagination = JSON.parse(pagination) } catch (e) { if(!pagination) pagination = {} };
     try { sort = JSON.parse(sort) } catch (e) { if(!sort) sort = {} };
@@ -21,6 +21,14 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
     delete filters['q'];
     delete filters['qField'];
 
+
+    if(timestamp){
+        let baseDate = new Date, interactiveDate = new Date(baseDate.toLocaleDateString());
+        query = {
+            ...query,
+            date: {$gte: interactiveDate, $lte: baseDate},
+        }
+    }
     for(let filter in filters) {
         query = {
             ...query,
