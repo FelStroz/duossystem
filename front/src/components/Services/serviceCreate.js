@@ -251,7 +251,7 @@ const ServiceCreate = props => {
                             </div>
                             :
                             <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <div style={{width: '100%'}}>
+                                <div style={{width: 'max-content'}}>
                                     <PostReferenceInput
                                         source="id"
                                         reference="clients"
