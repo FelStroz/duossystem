@@ -92,9 +92,17 @@ const ServicesPagination = () => {
 }
 
 const services = [
-    {id: 'Lavagem Completa', name: 'Lavagem Completa'},
-    {id: 'Lavagem de Banco', name: 'Lavagem de Banco'},
-    {id: 'Vidrificação', name: 'Vidrificação'},
+    {id: 'Lavagem Simples (P)', name: 'Lavagem Simples (P)'},
+    {id: 'Lavagem Simples (G)', name: 'Lavagem Simples (G)'},
+    {id: 'Lavagem Completa (P)', name: 'Lavagem Completa (P)'},
+    {id: 'Lavagem Completa (G)', name: 'Lavagem Completa (G)'},
+    {id: 'Lavagem Geral (P)', name: 'Lavagem Geral (P)'},
+    {id: 'Lavagem Geral (G)', name: 'Lavagem Geral (G)'},
+    {id: 'Ducha Simples (P)', name: 'Ducha Simples (P)'},
+    {id: 'Ducha Simples (G)', name: 'Ducha Simples (G)'},
+    {id: 'Ducha Completa (P)', name: 'Ducha Completa (P)'},
+    {id: 'Ducha Completa (G)', name: 'Ducha Completa (G)'},
+
 ];
 
 const FieldChipClient = ({record}) => {
@@ -267,10 +275,113 @@ const ServiceCreate = props => {
                                                 removeButton={<DeleteForeverIcon cursor={'pointer'}/>}>
                                 <SelectInput label="Serviço" source="name" choices={services}
                                              optionText="name" validate={[required()]}/>
-                                <NumberInput label="Valor" source="price" validate={[required(), minValue(0)]} min={0}
+                                <NumberInput label="Valor" source="price"
+                                             validate={[required(), minValue(0)]} min={0}
+                                             defaultValue={40}
                                              InputProps={{
-                                                 startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                                                 startAdornment: <InputAdornment
+                                                     position="start">R$</InputAdornment>,
                                              }}/>
+                                <FormDataConsumer>
+                                    {({
+                                          formData, ...rest
+                                      }) => {
+                                        formData.service.map((service) => {
+                                            console.log(service);
+                                            if (service?.name === "Lavagem Simples (P)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={40}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Lavagem Simples (G)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={45}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Lavagem Completa (P)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={45}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Lavagem Completa (G)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={50}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Lavagem Geral (P)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={80}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Lavagem Geral (G)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={100}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Ducha Simples (P)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={20}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Ducha Simples (G)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={25}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Ducha Completa (P)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={25}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Ducha Completa (G)")
+                                                return <NumberInput label="Valor" source="price"
+                                                                    validate={[required(), minValue(0)]} min={0}
+                                                                    initialValue={30}
+                                                                    InputProps={{
+                                                                        startAdornment: <InputAdornment
+                                                                            position="start">R$</InputAdornment>,
+                                                                    }}/>
+                                            else if (service?.name === "Outro")
+                                                return <span>
+                                                <TextInput source="name" label="Serviço"/>
+                                                <NumberInput label="Valor" source="price"
+                                                             validate={[required(), minValue(0)]} min={0}
+                                                             InputProps={{
+                                                                 startAdornment: <InputAdornment
+                                                                     position="start">R$</InputAdornment>,
+                                                             }}/>
+                                                </span>
+
+                                        })
+                                    }}
+                                </FormDataConsumer>
                             </SimpleFormIterator>
                         </ArrayInput>
                         <div className={"divMarcaCor"}>
@@ -281,30 +392,32 @@ const ServiceCreate = props => {
                     </FormTab>
                 </TabbedForm>
             </Create>
-                <List style={{marginTop: 5}} empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço hoje!</h2>}
-                      pagination={<ServicesPagination/>} perPage={3} actions={false}
-                      bulkActionButtons={false} {...props}>
-                    <Datagrid rowStyle={ServicesShowRowStyle}>
-                        <TextField label="Cliente" source="client.name"/>
-                        <TextField label="Status" source="status"/>
-                        <ArrayField label="Serviços" source="service">
-                            <SingleFieldList linkType={false}>
-                                <ChipField source="name"/>
-                            </SingleFieldList>
-                        </ArrayField>
-                        <ArrayField label="Preço" source="service">
-                            <SingleFieldList linkType={false}>
-                                <FieldChipPrice/>
-                            </SingleFieldList>
-                        </ArrayField>
-                        <TextField label="Placa" source="licensePlate"/>
-                        <TextField label="Modelo" source="carBrand"/>
-                        <TextField label="Cor" source="color"/>
-                        <FieldChipDiscount label="Desconto" source="discount"/>
-                        <DateField label="Data" source="date"/>
-                        <TextField label="Método" source="paymentMethod"/>
-                    </Datagrid>
-                </List>
+            <List style={{marginTop: 5}}
+                  empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço
+                      hoje!</h2>}
+                  pagination={<ServicesPagination/>} perPage={3} actions={false}
+                  bulkActionButtons={false} {...props}>
+                <Datagrid rowStyle={ServicesShowRowStyle}>
+                    <TextField label="Cliente" source="client.name"/>
+                    <TextField label="Status" source="status"/>
+                    <ArrayField label="Serviços" source="service">
+                        <SingleFieldList linkType={false}>
+                            <ChipField source="name"/>
+                        </SingleFieldList>
+                    </ArrayField>
+                    <ArrayField label="Preço" source="service">
+                        <SingleFieldList linkType={false}>
+                            <FieldChipPrice/>
+                        </SingleFieldList>
+                    </ArrayField>
+                    <TextField label="Placa" source="licensePlate"/>
+                    <TextField label="Modelo" source="carBrand"/>
+                    <TextField label="Cor" source="color"/>
+                    <FieldChipDiscount label="Desconto" source="discount"/>
+                    <DateField label="Data" source="date"/>
+                    <TextField label="Método" source="paymentMethod"/>
+                </Datagrid>
+            </List>
         </SimpleBar>
     );
 };
