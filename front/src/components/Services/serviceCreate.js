@@ -102,6 +102,7 @@ const services = [
     {id: 'Ducha Simples (G)', name: 'Ducha Simples (G)'},
     {id: 'Ducha Completa (P)', name: 'Ducha Completa (P)'},
     {id: 'Ducha Completa (G)', name: 'Ducha Completa (G)'},
+    {id: 'Outro', name: 'Outro'},
 
 ];
 
@@ -276,109 +277,59 @@ const ServiceCreate = props => {
                                 <SelectInput label="Serviço" source="name" choices={services}
                                              optionText="name" validate={[required()]}/>
                                 <NumberInput label="Valor" source="price"
-                                             validate={[required(), minValue(0)]} min={0}
-                                             defaultValue={40}
-                                             InputProps={{
-                                                 startAdornment: <InputAdornment
-                                                     position="start">R$</InputAdornment>,
-                                             }}/>
+                                                     validate={[required(), minValue(0)]} min={0}
+                                                     InputProps={{
+                                                         startAdornment: <InputAdornment
+                                                             position="start">R$</InputAdornment>,
+                                                     }}/>
+                                {/*<FormDataConsumer>*/}
+                                {/*    {({*/}
+                                {/*          formData, ...rest*/}
+                                {/*      }) => {if (formData.service[formData.service.length - 1]?.name == "Outro")*/}
+                                {/*            return <span style={{display: "flex", flexDirection: "column"}}>*/}
+                                {/*            <TextInput source="name" label="Serviço"/>*/}
+                                {/*            <NumberInput style={{marginTop: '15px'}} label="Valor" source="price"*/}
+                                {/*            validate={[required(), minValue(0)]} min={0}*/}
+                                {/*            InputProps={{*/}
+                                {/*            startAdornment: <InputAdornment*/}
+                                {/*            position="start">R$</InputAdornment>,*/}
+                                {/*        }}/>*/}
+                                {/*            </span>*/}
+                                {/*        else*/}
+                                {/*        return <NumberInput label="Valor" source="price"*/}
+                                {/*                     validate={[required(), minValue(0)]} min={0}*/}
+                                {/*                     InputProps={{*/}
+                                {/*                         startAdornment: <InputAdornment*/}
+                                {/*                             position="start">R$</InputAdornment>,*/}
+                                {/*                     }}/>*/}
+                                {/*    }}*/}
+                                {/*</FormDataConsumer>*/}
                                 <FormDataConsumer>
                                     {({
                                           formData, ...rest
                                       }) => {
                                         formData.service.map((service) => {
-                                            console.log(service);
+                                            console.log(service, formData, {...rest});
                                             if (service?.name === "Lavagem Simples (P)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={40}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 40;
                                             else if (service?.name === "Lavagem Simples (G)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={45}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 45;
                                             else if (service?.name === "Lavagem Completa (P)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={45}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 45;
                                             else if (service?.name === "Lavagem Completa (G)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={50}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 50;
                                             else if (service?.name === "Lavagem Geral (P)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={80}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 80;
                                             else if (service?.name === "Lavagem Geral (G)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={100}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 100;
                                             else if (service?.name === "Ducha Simples (P)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={20}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 20;
                                             else if (service?.name === "Ducha Simples (G)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={25}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 25;
                                             else if (service?.name === "Ducha Completa (P)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={25}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
+                                                service.price = 25;
                                             else if (service?.name === "Ducha Completa (G)")
-                                                return <NumberInput label="Valor" source="price"
-                                                                    validate={[required(), minValue(0)]} min={0}
-                                                                    initialValue={30}
-                                                                    InputProps={{
-                                                                        startAdornment: <InputAdornment
-                                                                            position="start">R$</InputAdornment>,
-                                                                    }}/>
-                                            else if (service?.name === "Outro")
-                                                return <span>
-                                                <TextInput source="name" label="Serviço"/>
-                                                <NumberInput label="Valor" source="price"
-                                                             validate={[required(), minValue(0)]} min={0}
-                                                             InputProps={{
-                                                                 startAdornment: <InputAdornment
-                                                                     position="start">R$</InputAdornment>,
-                                                             }}/>
-                                                </span>
-
+                                                service.price = 30;
                                         })
                                     }}
                                 </FormDataConsumer>
