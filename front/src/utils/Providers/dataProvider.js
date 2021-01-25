@@ -16,7 +16,7 @@ export default {
                 resource = 'cars?populate=client'
         if(resource === 'create-service'){
             resource = 'cars?populate=client&timestamp=day';
-            params.pagination.perPage = 5;
+            params.pagination.perPage = 3;
         }
 
         return new Promise((resolve, reject) => {

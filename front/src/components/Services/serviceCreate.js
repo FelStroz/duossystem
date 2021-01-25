@@ -71,7 +71,7 @@ const ServicesShowRowStyle = (record) => ({
 
 const ServicesPagination = () => {
     const {page, total, setPage} = useListContext();
-    const nbPages = Math.ceil(total / 5) || 1;
+    const nbPages = Math.ceil(total / 3) || 1;
     return (
         nbPages > 1 &&
         <Toolbar>
@@ -281,7 +281,8 @@ const ServiceCreate = props => {
                     </FormTab>
                 </TabbedForm>
             </Create>
-                <List style={{marginTop: 30}} empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço hoje!</h2>} pagination={<ServicesPagination/>} perPage={5} actions={false}
+                <List style={{marginTop: 5}} empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço hoje!</h2>}
+                      pagination={<ServicesPagination/>} perPage={3} actions={false}
                       bulkActionButtons={false} {...props}>
                     <Datagrid rowStyle={ServicesShowRowStyle}>
                         <TextField label="Cliente" source="client.name"/>

@@ -58,7 +58,7 @@ h1, h2 , h3, h4, h5, h6, p, li, ul {
 }
 
 .divInputs{
-  width: 100% !important;
+  width: 74vw !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -66,17 +66,17 @@ h1, h2 , h3, h4, h5, h6, p, li, ul {
 }
 
 .MuiDrawer-paper {
-  width: 300px !important;
+  width: 240px !important;
 }
 
 .RaAutocompleteInput-container-64{
   flex-grow: initial !important;
 }
 
-.RaFormInput-input-103 {
+.RaFormInput-input-115 {
   width: 100% !important;
 }
 
-.RaSimpleFormIterator-form-131{
+.RaSimpleFormIterator-form-124{
   flex: 0 !important;
 }
