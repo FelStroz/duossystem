@@ -12,15 +12,21 @@ const StaffFilter = (props) => (
 );
 
 const FoulsField = ({record}) => {
-    return <span>{record.fouls.length}</span>
+    if(record.fouls)
+        return <span>{record.fouls.length}</span>
+    else
+        return ""
 }
 
 const SpendField = ({record}) => {
     let totalCost = 0;
-    record.spending.map((item) => {
-        totalCost += item.value;
-    })
-    return <span>R$ {totalCost}</span>
+    if(record.spending){
+        record.spending.map((item) => {
+            totalCost += item.value;
+        })
+        return <span>R$ {totalCost}</span>
+    }else
+        return "";
 }
 
 const ActiveField = ({record}) => {

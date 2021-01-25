@@ -4,7 +4,6 @@ import {
     TextField,
     Pagination,
     Filter,
-    SearchInput,
     Datagrid,
     ArrayField,
     SingleFieldList,
@@ -12,35 +11,24 @@ import {
     DateField,
     TextInput,
     SelectInput,
+    ExportButton, DateInput
 } from 'react-admin';
 import Toolbar from "@material-ui/core/Toolbar";
-import {useMediaQuery} from "@material-ui/core";
 import {ServiceEdit} from "./servicesEdit";
-
-import {makeStyles, Chip} from '@material-ui/core';
 import SimpleBar from "simplebar-react";
-
-const useQuickFilterStyles = makeStyles(theme => ({
-    chip: {
-        marginBottom: theme.spacing(1),
-    },
-}));
-
-const QuickFilter = ({label}) => {
-    const classes = useQuickFilterStyles();
-    return <Chip className={classes.chip} label={label}/>;
-}
+import jsonExport from 'jsonexport';
 
 const ServicesFilter = (props) => (
     <Filter {...props}>
-        <SearchInput placeholder="Localizar" source="q" alwaysOn/>
+        <TextInput label="Nome do Cliente" source={"nameClient"}/>
         <TextInput label="Placa do Carro" source="licensePlate"/>
-        <TextInput label="Marca" source="carBrand"/>
+        <TextInput label="Modelo" source="carBrand"/>
         <SelectInput label="Método" source="paymentMethod" choices={choices}
                      optionText="name"/>
         <SelectInput label="Status" source="status" choices={status}
                      optionText="name" initialValue="Em aberto"/>
-        <QuickFilter source="timestamp" label="Hoje" defaultValue={"day"}/>
+        <DateInput source="timeInterval.startDate" label="Data de início"/>
+        <DateInput source="timeInterval.endDate" initialValue={new Date} label="Data de término"/>
     </Filter>
 );
 
@@ -59,16 +47,11 @@ const status = [
 ];
 
 const ServicesActions = ({
-                             basePath,
-                             currentSort,
                              displayedFilters,
                              filters,
                              filterValues,
-                             onUnselectItems,
                              resource,
-                             selectedIds,
                              showFilter,
-                             total
                          }) => (
     <Toolbar style={{display: 'flex', alignItems: 'center'}}>
         {filters && React.cloneElement(filters, {
@@ -78,12 +61,12 @@ const ServicesActions = ({
             filterValues,
             context: 'button',
         })}
-
+        <ExportButton basePath={'/cars?populate=clients'}/>
     </Toolbar>
 );
 
-const ServicesPagination = props => <Pagination label="Itens por Página" initialValue={10}
-                                                rowsPerPageOptions={[5, 10, 15, 20, 25]}  {...props} />;
+const ServicesPagination = props => <Pagination label="Itens por Página"
+                                                rowsPerPageOptions={[3, 6, 10, 15, 20, 25]}  {...props} />;
 
 const ServiceRowStyle = (record) => ({
     borderLeftColor: record.status === "Faturado" ? 'rgb(66,94,255)' : record.status === "Atrasado" ? 'rgba(255,72,72,0.38)' : record.status === "Em aberto" ? 'rgba(255,255,15,0.79)' : 'rgba(92,255,64,0.38)',
@@ -120,12 +103,70 @@ const FieldChipDiscount = ({record}) => {
     }}>R$ {record.discount}</span>
 };
 
+const exporter = (services) => {
+    let allServices = [];
+    for(let serv in services){
+        let servicesForExport = {}, total = 0;
+        let service = services[serv];
+        for(let namePrice of service.service){
+            if(!servicesForExport.Serviço)
+                servicesForExport.Serviço = namePrice.name;
+            else
+                servicesForExport.Serviço += "/" + namePrice.name;
+            total += namePrice.price;
+        }
+        delete service._id;
+        delete service.updatedAt;
+        delete service.createdAt;
+        delete service.__v;
+        delete service.client;
+
+        servicesForExport.Nome = service.nameClient;
+        servicesForExport.Protocolo = service.protocol;
+        servicesForExport.Preço = 'R$ ' + `${total}` + ',00';
+        servicesForExport.Modelo = service.carBrand;
+        servicesForExport.Placa = service.licensePlate;
+        servicesForExport.Cor = service.color;
+        servicesForExport.Desconto = 'R$ ' + `${service.discount}` + ',00';
+        servicesForExport.Total = 'R$ ' + `${total - service.discount}` + ',00';
+        servicesForExport.Data = `${new Date(service.date).toLocaleDateString()}`;
+        servicesForExport.Observação = (service.observation !== "") ? service.observation : "Sem observação";
+        servicesForExport.Método = service.paymentMethod;
+        servicesForExport.Status = service.status;
+
+        delete servicesForExport.observation;
+        delete servicesForExport.status;
+        delete servicesForExport.protocol;
+        delete servicesForExport.date;
+        delete servicesForExport.paymentMethod;
+        delete servicesForExport.licensePlate;
+        delete servicesForExport.carBrand
+        delete servicesForExport.color;
+        delete servicesForExport.observation;
+        delete servicesForExport.discount;
+        delete servicesForExport.service;
+        delete servicesForExport.nameClient;
+
+        allServices.push(servicesForExport);
+    }
+    jsonExport(allServices, {
+        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
+        rowDelimiter: ';',
+    }, (err, csv) => {
+        let link = window.document.createElement("a");
+        link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csv.toString()));
+        link.setAttribute("download", `Lista de Serviços.csv`);
+        link.click();
+    });
+};
+
 export const ServiceList = (props) => {
     return (
         <SimpleBar style={{maxHeight: '100%'}}>
             <List title="Lista de Serviços" sort={{field: 'createdAt', order: 'DESC'}} bulkActionButtons={false}
                   actions={<ServicesActions/>}
-                  pagination={<ServicesPagination/>} filters={<ServicesFilter/>} {...props}>
+                  exporter={exporter}
+                  pagination={<ServicesPagination/>} perPage={6} filters={<ServicesFilter/>} {...props}>
                 <Datagrid expand={<ServiceEdit/>} rowStyle={ServiceRowStyle}>
                     <TextField label="Status" source="status"/>
                     <TextField label="Cliente" source="client.name"/>
@@ -140,8 +181,7 @@ export const ServiceList = (props) => {
                         </SingleFieldList>
                     </ArrayField>
                     <TextField label="Placa" source="licensePlate"/>
-                    <TextField label="Marca" source="carBrand"/>
-                    {/*<TextField label="Cor" source="color"/>*/}
+                    <TextField label="Modelo" source="carBrand"/>
                     <FieldChipDiscount label="Desconto" source="discount"/>
                     <DateField label="Data" source="date"/>
                     <TextField label="Método" source="paymentMethod"/>

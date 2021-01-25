@@ -8,12 +8,15 @@ let CarsSchema = new mongoose.Schema({
         required: true,
         ref: 'Client'
     },
+    nameClient: {
+        type: String,
+    },
     date: {type: Date, validate: [isDate, 'Invalid format in date of the birthday! Please insert a valid date!'], required: true},
     service: [{
-        name: {type: String},
-        price: {type: Number},
+        name: {type: String, required: true},
+        price: {type: Number, required: true},
     }],
-    paymentMethod: {type: String, required: true},
+    paymentMethod: {type: String, default: "A definir"},
     status: {type: String, default: 'Em aberto'},
     licensePlate: {type: String, uppercase: true, required: true},
     carBrand: {type: String, required: true},

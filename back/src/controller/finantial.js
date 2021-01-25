@@ -1,6 +1,5 @@
 const Cars = require('../model/cars');
 const views = require('../view/finantial');
-const addSubtractDate = require("add-subtract-date");
 
 module.exports = {
     getTotal: async (req, res) => {
@@ -9,11 +8,11 @@ module.exports = {
         if (timestamp === "day")
             pastDate = new Date(pastDate.toLocaleDateString());
         else if (timestamp === "month")
-            await addSubtractDate.subtract(pastDate, 1, "month");
+            pastDate = new Date(`01-${pastDate.getUTCMonth() + 1}-${pastDate.getUTCFullYear()}`)
         else if (timestamp === "year")
-            await addSubtractDate.subtract(pastDate, 1, "year");
+            pastDate = new Date(`01-01-${pastDate.getUTCFullYear()}`)
         else
-            await addSubtractDate.subtract(pastDate, 1, "year");
+            pastDate = new Date(`01-01-${pastDate.getUTCFullYear()}`)
         Cars.find({date: {$gte: pastDate.toISOString(), $lte: now}}).populate('client').then((services) => {
                 services.map(item => {
                     item.service.map(service => {

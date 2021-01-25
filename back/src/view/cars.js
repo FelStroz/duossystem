@@ -27,11 +27,12 @@ module.exports = {
             data: one(service).data
         });
     },
-    showDeleted: ({_id}, status, res) => {
+    showDeleted: ({_id, status}, statuss, res) => {
         res.status(200).json({
-            status: status,
+            status: statuss,
             data: {
-                id: _id
+                id: _id,
+                status
             }
         });
     },
@@ -55,7 +56,7 @@ module.exports = {
     },
 };
 
-function one({_id: id, client, date, service, paymentMethod, status, licensePlate, carBrand, protocol, color, observation, discount, createdAt, updatedAt}) {
+function one({_id: id, client, date, service, paymentMethod, status, licensePlate, carBrand, protocol, color, observation, discount, nameClient, createdAt, updatedAt}) {
     return {
         data: {
             id,
@@ -70,6 +71,7 @@ function one({_id: id, client, date, service, paymentMethod, status, licensePlat
             color,
             observation,
             discount,
+            nameClient,
             createdAt,
             updatedAt,
         }

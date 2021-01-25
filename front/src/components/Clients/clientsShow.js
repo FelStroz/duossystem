@@ -11,7 +11,7 @@ import {
     ChipField,
     Datagrid,
     DateField,
-    ExportButton,
+    ExportButton
 } from 'react-admin';
 import jsonExport from 'jsonexport';
 import BackButton from "../BackButton";
@@ -24,7 +24,7 @@ const exporter = (services) => {
         servicesForExport.Protocolo = service.protocol;
         servicesForExport.Serviço = service.service[0].name;
         servicesForExport.Preço = service.service[0].price;
-        servicesForExport.Marca = service.carBrand;
+        servicesForExport.Modelo = service.carBrand;
         servicesForExport.Placa = service.licensePlate;
         servicesForExport.Cor = service.color;
         servicesForExport.Desconto = service.discount;
@@ -49,7 +49,7 @@ const exporter = (services) => {
         return servicesForExport;
     })
     jsonExport(servicesForExport, {
-        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Marca', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
+        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
         rowDelimiter: ';',
     }, (err, csv) => {
         let link = window.document.createElement("a");
@@ -146,7 +146,7 @@ const MostRecentDate = ({record}) => {
 
 };
 
-const ClientShowRowStyle = (record, index) => ({
+const ClientShowRowStyle = (record) => ({
     borderLeftColor: record.status === "Faturado" ? 'rgb(66,94,255)' : record.status === "Atrasado" ? 'rgba(255,72,72,0.38)' : record.status === "Em aberto" ? 'rgba(255,255,15,0.79)' : 'rgba(92,255,64,0.38)',
     borderLeftWidth: 5,
     borderLeftStyle: 'solid',
@@ -170,7 +170,7 @@ export const ClientShow = (props) => (
                             </SingleFieldList>
                         </ArrayField>
                         <TextField label="Placa" source="licensePlate"/>
-                        <TextField label="Marca" source="carBrand"/>
+                        <TextField label="Modelo" source="carBrand"/>
                         <TextField label="Cor" source="color"/>
                         <FieldChipDiscount label="Desconto" source="discount"/>
                         <DateField label="Data" source="date"/>

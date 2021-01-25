@@ -17,6 +17,9 @@ import WarningIcon from '@material-ui/icons/Warning';
 import CakeIcon from '@material-ui/icons/Cake';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import SimpleBar from "simplebar-react";
+import {useHistory} from 'react-router-dom';
+import {useState} from "react";
 
 const useStyles = makeStyles({
     link: {
@@ -65,13 +68,12 @@ const InstagramField = ({record = {}, source}) => {
     let username = record[source].substring(1, record[source].length)
     let url = `http://instagram.com/${username}`;
     return <a style={{fontSize: '0.95em'}} href={url} target='_blank'>
-            {record[source]}
-        <InstagramIcon className={classes.icon} />
+        {record[source]}
+        <InstagramIcon className={classes.icon}/>
     </a>
 }
 
 const ClientActions = ({
-                           basePath,
                            displayedFilters,
                            filters,
                            filterValues,
@@ -86,36 +88,43 @@ const ClientActions = ({
             filterValues,
             context: 'button',
         })}
-
     </Toolbar>
 );
 
 const ClientPagination = props => <Pagination label="Itens por Página"
-                                              rowsPerPageOptions={[5, 10, 15, 20, 30, 50]}  {...props} />;
+                                              rowsPerPageOptions={[5, 9, 10, 15, 20, 30, 50]} {...props} />;
 
 export const ClientList = props => {
+    const [count, setCount] = useState(0);
+    useHistory().location.state = count;
+
     const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
     return (
-        <List title="Lista de Clientes" bulkActionButtons={false} filters={<ClientFilter/>} actions={<ClientActions/>}
-              pagination={<ClientPagination/>} {...props}>
-            {isSmall ? (
-                <SimpleList
-                    primaryText={record => record.name}
-                    secondaryText={record => record.instagram}
-                    tertiaryText={record => record.phone}
-                />
-            ) : (
-                <Datagrid rowClick="edit">
-                    <TextField label="Nome Completo" source="name"/>
-                    <BirthdayField label="Data de Nascimento" source="birthday"/>
-                    <InstagramField label="Instagram" source="instagram"/>
-                    <TextField label="Telefone" source="phone"/>
-                    <TextField label="Endereço" source="address"/>
-                    <ClientNumberServices label="Número de Serviços"/>
-                    <ButtonShow label="Listagem de Serviços"/>
-                    <ClientFrequency label="Assiduidade"/>
-                </Datagrid>
-            )}
-        </List>
+        <SimpleBar style={{maxHeight: '100%'}}>
+            <List title="Lista de Clientes" bulkActionButtons={false} filters={<ClientFilter/>}
+                  actions={<ClientActions/>}
+                  pagination={<ClientPagination/>}
+                  perPage={9}
+                  {...props}>
+                {isSmall ? (
+                    <SimpleList
+                        primaryText={record => record.name}
+                        secondaryText={record => record.instagram}
+                        tertiaryText={record => record.phone}
+                    />
+                ) : (
+                    <Datagrid rowClick="edit">
+                        <TextField label="Nome Completo" source="name"/>
+                        <BirthdayField label="Data de Nascimento" source="birthday"/>
+                        <InstagramField label="Instagram" source="instagram"/>
+                        <TextField label="Telefone" source="phone"/>
+                        <TextField label="Endereço" source="address"/>
+                        <ClientNumberServices label="Número de Serviços"/>
+                        <ButtonShow label="Listagem de Serviços"/>
+                        <ClientFrequency nonFrequency={setCount} label="Assiduidade"/>
+                    </Datagrid>
+                )}
+            </List>
+        </SimpleBar>
     );
 }

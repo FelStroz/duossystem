@@ -12,7 +12,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import jsonExport from "jsonexport";
 import {ButtonExporter} from './styles';
-import {useNotify} from 'react-admin';
 
 const spentCardStyle = {
     width: 300,
@@ -142,7 +141,7 @@ const exporter = (services, timestamp) => {
         servicesForExport.Protocolo = service.protocol;
         servicesForExport.Serviço = service.service[0].name;
         servicesForExport.Preço = service.service[0].price;
-        servicesForExport.Marca = service.carBrand;
+        servicesForExport.Modelo = service.carBrand;
         servicesForExport.Placa = service.licensePlate;
         servicesForExport.Cor = service.color;
         servicesForExport.Desconto = service.discount;
@@ -167,7 +166,7 @@ const exporter = (services, timestamp) => {
         return servicesForExport;
     })
     jsonExport(servicesForExport, {
-        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Marca', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
+        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
         rowDelimiter: ';',
     }, (err, csv) => {
         let link = window.document.createElement("a");

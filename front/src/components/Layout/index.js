@@ -6,7 +6,6 @@ import {makeStyles, withStyles} from '@material-ui/core/styles';
 import {ThemeProvider} from '@material-ui/styles';
 import {createMuiTheme} from '@material-ui/core';
 import Menu from '../Menu'
-import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
 import {

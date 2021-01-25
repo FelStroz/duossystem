@@ -8,9 +8,9 @@ export default {
         if(resource === 'clients')
             resource = 'clients?populate=services'
         if(resource === 'cars' || resource === undefined)
-            if(params.filter.timestamp){
-                resource = 'cars?populate=client&timestamp=day'
-                delete params.filter.timestamp;
+            if(params.filter.timeInterval){
+                resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}`
+                delete params.filter.timeInterval;
             }
             else
                 resource = 'cars?populate=client'
@@ -19,7 +19,6 @@ export default {
             params.pagination.perPage = 5;
         }
 
-        // console.log(params);
         return new Promise((resolve, reject) => {
             axios.get(`${config.backUrl}/${resource}`, {
                 headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`},
@@ -145,8 +144,11 @@ export default {
     create: (resource, params) => {
         if(resource === 'users')
             resource = 'admin/users'
-        if(resource === 'create-service')
-            resource = 'cars'
+        if(resource === 'create-service'){
+            resource = 'cars';
+            if(params.data.id)
+                params.data.client = params.data.id;
+        }
         // if(resource === 'products'){
         //     let dados = new FormData();
         //     dados.append('photo', params.data.photo.rawFile);
@@ -175,11 +177,9 @@ export default {
             let date = new Date(params.data.birthday);
             params.data.birthday = `${date.getUTCFullYear()}-${date.getUTCMonth()+1}-${date.getUTCDate()}`;
         }
-
         return new Promise((resolve, reject) => {
             axios.post(`${config.backUrl}/${resource}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
                 .then((response) => {
-                    console.log(response);
                     resolve(response.data);
                 })
                 .catch(e => {

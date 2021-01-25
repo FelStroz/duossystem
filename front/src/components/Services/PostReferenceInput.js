@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useFormState } from 'react-final-form';
-import { ReferenceInput, SelectInput, AutocompleteInput } from 'react-admin';
+import { ReferenceInput, AutocompleteInput } from 'react-admin';
 import { makeStyles } from '@material-ui/core/styles';
 
 import PostQuickCreateButton from './PostQuickCreateButton';

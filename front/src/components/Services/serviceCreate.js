@@ -19,7 +19,8 @@ import {
     NumberInput,
     minValue,
     DateInput,
-    FormDataConsumer, useNotify
+    FormDataConsumer,
+    useNotify
 } from 'react-admin';
 import PostReferenceInput from './PostReferenceInput';
 import Toolbar from "@material-ui/core/Toolbar";
@@ -32,25 +33,6 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SearchIcon from '@material-ui/icons/Search';
 import provider from "../../utils/Providers/dataProvider";
 import PostQuickPreviewButton from "./PostQuickPreviewButton";
-
-const ServicesActions = ({
-                             basePath,
-                             displayedFilters,
-                             filters,
-                             filterValues,
-                             resource,
-                             showFilter,
-                         }) => (
-    <Toolbar>
-        {filters && React.cloneElement(filters, {
-            resource,
-            showFilter,
-            displayedFilters,
-            filterValues,
-            context: 'button',
-        })}
-    </Toolbar>
-);
 
 const FieldChipPrice = ({record}) => {
     return <span style={{
@@ -81,14 +63,14 @@ const FieldChipDiscount = ({record}) => {
     }}>R$ {record.discount}</span>
 };
 
-const ServicesShowRowStyle = (record, index) => ({
+const ServicesShowRowStyle = (record) => ({
     borderLeftColor: record.status === "Faturado" ? 'rgb(66,94,255)' : record.status === "Atrasado" ? 'rgba(255,72,72,0.38)' : record.status === "Em aberto" ? 'rgba(255,255,15,0.79)' : 'rgba(92,255,64,0.38)',
     borderLeftWidth: 5,
     borderLeftStyle: 'solid',
 });
 
 const ServicesPagination = () => {
-    const {page, perPage, total, setPage} = useListContext();
+    const {page, total, setPage} = useListContext();
     const nbPages = Math.ceil(total / 5) || 1;
     return (
         nbPages > 1 &&
@@ -109,13 +91,6 @@ const ServicesPagination = () => {
     );
 }
 
-const choices = [
-    {id: 'Crédito', name: 'Crédito'},
-    {id: 'Débito', name: 'Débito'},
-    {id: 'Dinheiro', name: 'Dinheiro'},
-    {id: 'Faturado', name: 'Faturado'}
-];
-
 const services = [
     {id: 'Lavagem Completa', name: 'Lavagem Completa'},
     {id: 'Lavagem de Banco', name: 'Lavagem de Banco'},
@@ -128,7 +103,7 @@ const FieldChipClient = ({record}) => {
         backgroundColor: 'rgb(224, 224, 224)',
         borderRadius: '16px',
         height: '25px',
-        width: '400px',
+        width: 'auto',
         padding: '3px',
         color: 'black',
         justifyContent: 'center',
@@ -166,6 +141,7 @@ const ServiceCreate = props => {
     return (<SimpleBar style={{maxHeight: '100%'}}>
             <Create {...props}>
                 <TabbedForm
+                    onSubmit={() => setList(null)}
                     style={{width: "100%"}}
                     centered={true}
                     redirect={"/cars"}
@@ -239,15 +215,15 @@ const ServiceCreate = props => {
                                     <FieldChipClient record={list.client}/>
                                     <PostQuickPreviewButton id={list.client._id}/>
                                 </div>
-                                <TextInput source={"client"} defaultValue={list.client._id} style={{display: 'none'}}/>
-                                <div style={{width: '256px', marginTop: '20px'}}>
-                                    <TextInput label="Marca" source="carBrand" validate={[required()]}/>
+                                <div className={"divInputs"}>
+                                    <TextInput label="Modelo" source="carBrand" validate={[required()]}/>
                                     <TextInput label="Cor" source="color" validate={[required()]}/>
-                                    <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
-                                                 optionText="name" validate={[required()]} allowEmpty/>
                                     <DateInput label="Data do Serviço" source="date" defaultValue={today}
                                                validate={[required()]}/>
                                 </div>
+                                <TextInput source={"client"} defaultValue={list.client._id} style={{display: 'none'}}/>
+                                <TextInput source={"nameClient"} defaultValue={list.client.name}
+                                           style={{display: 'none'}}/>
                             </div>
                             :
                             <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -261,29 +237,14 @@ const ServiceCreate = props => {
                                         optionText={"name"}
                                     />
                                 </div>
-                                <FormDataConsumer>
-                                    {({formData, ...rest}) => formData.id &&
-                                        <TextInput source={"client"} defaultValue={formData.id} style={{display: 'none'}}/>}
-                                </FormDataConsumer>
-                                <div style={{width: '256px'}}>
-                                    <TextInput label="Marca" source="carBrand" validate={[required()]}/>
+                                <div className={"divInputs"}>
+                                    <TextInput label="Modelo" source="carBrand" validate={[required()]}/>
                                     <TextInput label="Cor" source="color" validate={[required()]}/>
-                                    <SelectInput label="Pagamento" source="paymentMethod" choices={choices}
-                                                 optionText="name" validate={[required()]} allowEmpty/>
                                     <DateInput label="Data do Serviço" source="date" defaultValue={today}
                                                validate={[required()]}/>
                                 </div>
                             </div>
-
                         }
-                        <FormDataConsumer>
-                            {({
-                                  formData,
-                                  ...rest
-                              }) => formData.paymentMethod && formData.paymentMethod == "Faturado" &&
-                                <TextInput source="status" defaultValue={"Faturado"} style={{display: 'none'}}/>
-                            }
-                        </FormDataConsumer>
                     </FormTab>
                     <FormTab label="Serviços">
                         <p
@@ -301,7 +262,7 @@ const ServiceCreate = props => {
                         >
                             Serviços
                         </p>
-                        <ArrayInput label=" " source="service" style={{marginLeft: '50px'}}>
+                        <ArrayInput label=" " source="service" defaultValue={[{name: "", price: ""}]}>
                             <SimpleFormIterator addButton={<LibraryAddIcon cursor={'pointer'}/>}
                                                 removeButton={<DeleteForeverIcon cursor={'pointer'}/>}>
                                 <SelectInput label="Serviço" source="name" choices={services}
@@ -320,28 +281,29 @@ const ServiceCreate = props => {
                     </FormTab>
                 </TabbedForm>
             </Create>
-            <List style={{marginTop: 30}} pagination={<ServicesPagination/>} perPage={5} actions={false}
-                  bulkActionButtons={false} {...props}>
-                <Datagrid rowStyle={ServicesShowRowStyle}>
-                    <TextField label="Status" source="status"/>
-                    <ArrayField label="Serviços" source="service">
-                        <SingleFieldList linkType={false}>
-                            <ChipField source="name"/>
-                        </SingleFieldList>
-                    </ArrayField>
-                    <ArrayField label="Preço" source="service">
-                        <SingleFieldList linkType={false}>
-                            <FieldChipPrice/>
-                        </SingleFieldList>
-                    </ArrayField>
-                    <TextField label="Placa" source="licensePlate"/>
-                    <TextField label="Marca" source="carBrand"/>
-                    <TextField label="Cor" source="color"/>
-                    <FieldChipDiscount label="Desconto" source="discount"/>
-                    <DateField label="Data" source="date"/>
-                    <TextField label="Método" source="paymentMethod"/>
-                </Datagrid>
-            </List>
+                <List style={{marginTop: 30}} empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço hoje!</h2>} pagination={<ServicesPagination/>} perPage={5} actions={false}
+                      bulkActionButtons={false} {...props}>
+                    <Datagrid rowStyle={ServicesShowRowStyle}>
+                        <TextField label="Cliente" source="client.name"/>
+                        <TextField label="Status" source="status"/>
+                        <ArrayField label="Serviços" source="service">
+                            <SingleFieldList linkType={false}>
+                                <ChipField source="name"/>
+                            </SingleFieldList>
+                        </ArrayField>
+                        <ArrayField label="Preço" source="service">
+                            <SingleFieldList linkType={false}>
+                                <FieldChipPrice/>
+                            </SingleFieldList>
+                        </ArrayField>
+                        <TextField label="Placa" source="licensePlate"/>
+                        <TextField label="Modelo" source="carBrand"/>
+                        <TextField label="Cor" source="color"/>
+                        <FieldChipDiscount label="Desconto" source="discount"/>
+                        <DateField label="Data" source="date"/>
+                        <TextField label="Método" source="paymentMethod"/>
+                    </Datagrid>
+                </List>
         </SimpleBar>
     );
 };

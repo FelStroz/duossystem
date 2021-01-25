@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createElement, useState} from 'react';
+import {createElement} from 'react';
 import {useSelector} from 'react-redux';
 import {useMediaQuery} from '@material-ui/core';
 import {getResources} from 'react-admin';
@@ -34,7 +34,7 @@ const Menu = ({onMenuClick, logout}) => {
                         return <MenuItem
                             key={resource.name}
                             to={`/${resource.name}/create`}
-                            primaryText={resource.options && resource.options.label || resource.name}
+                            primaryText={resource.options && resource.options.label || resource.name }
                             leftIcon={createElement(resource.icon)}
                             onClick={onMenuClick}
                             sidebarIsOpen={open}

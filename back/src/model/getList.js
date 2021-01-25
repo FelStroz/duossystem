@@ -1,5 +1,5 @@
 module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
-    let { pagination, sort, filter: filters, populate, timestamp } = queryData;
+    let { pagination, sort, filter: filters, populate, startDate, endDate } = queryData;
 
     try { pagination = JSON.parse(pagination) } catch (e) { if(!pagination) pagination = {} };
     try { sort = JSON.parse(sort) } catch (e) { if(!sort) sort = {} };
@@ -21,14 +21,20 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
     delete filters['q'];
     delete filters['qField'];
 
+    if(startDate || endDate){
+        let baseDate = new Date(startDate), lastDate = new Date(endDate);
+        if(startDate == "undefined")
+            baseDate = new Date('01-01-1700');
+        if(endDate == "undefined")
+            lastDate = new Date();
 
-    if(timestamp){
-        let baseDate = new Date, interactiveDate = new Date(baseDate.toLocaleDateString());
+        console.log(baseDate, lastDate, "-------------")
         query = {
             ...query,
-            date: {$gte: interactiveDate, $lte: baseDate},
+            date: {$gte: baseDate, $lte: lastDate},
         }
     }
+
     for(let filter in filters) {
         query = {
             ...query,

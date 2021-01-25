@@ -1,6 +1,6 @@
 import React from "react";
 import {Admin, Resource} from 'react-admin';
-import {theme, initialState} from "./styles";
+import {initialState} from "./styles";
 import {authProvider, dataProvider, i18nProvider} from '../../utils';
 import NotFound from '../../components/NotFound';
 
@@ -32,10 +32,10 @@ export default function AdminPage() {
         >
             {
                 permission => [
-                    <Resource options={{ label: 'Clientes' }} name="clients" edit={ClientEdit} show={ClientShow} list={ClientList} icon={PeopleIcon}/>,
-                    <Resource options={{ label: 'Novo Serviço' }} name="create-service" create={ServiceCreate} icon={AddToQueueIcon}/>,
-                    <Resource options={{ label: 'Finanças' }} name="finantial" icon={LocalAtmIcon}/>,
                     <Resource options={{ label: 'Serviços' }} name="cars" list={ServiceList} icon={DriveEtaIcon}/>,
+                    <Resource options={{ label: 'Novo Serviço' }} name="create-service" create={ServiceCreate} icon={AddToQueueIcon}/>,
+                    <Resource options={{ label: 'Clientes' }} name="clients" edit={ClientEdit} show={ClientShow} list={ClientList} icon={PeopleIcon}/>,
+                    <Resource options={{ label: 'Finanças' }} name="finantial" icon={LocalAtmIcon}/>,
                     <Resource options={{ label: 'Staff' }} name="staff" list={StaffList} edit={StaffEdit} create={StaffCreate} icon={AssignmentIndIcon} />,
                     (permission === "true" ?
                         <Resource options={{ label: 'Usuários' }} name="users" list={UserList} edit={UserEdit} create={UserCreate} icon={AccountCircleIcon}/>

@@ -57,10 +57,26 @@ h1, h2 , h3, h4, h5, h6, p, li, ul {
   margin-top: 15px;
 }
 
+.divInputs{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .MuiDrawer-paper {
   width: 300px !important;
 }
 
 .RaAutocompleteInput-container-64{
   flex-grow: initial !important;
+}
+
+.RaFormInput-input-103 {
+  width: 100% !important;
+}
+
+.RaSimpleFormIterator-form-131{
+  flex: 0 !important;
 }

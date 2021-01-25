@@ -24,7 +24,7 @@ let ClientSchema = new mongoose.Schema({
 ClientSchema.pre('findOneAndUpdate', async function (next) {
     let client = this._update;
 
-    console.log(client);
+    // console.log(client);
 
 });
 

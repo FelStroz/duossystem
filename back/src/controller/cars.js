@@ -7,17 +7,40 @@ const {manageProtocol} = require('../middleware/protocol');
 
 module.exports = {
     create: async (req, res) => {
-        let {client, date, service, paymentMethod, licensePlate, carBrand, color, observation, discount, status} = req.body;
+        let {
+            client,
+            date,
+            service,
+            paymentMethod,
+            licensePlate,
+            nameClient,
+            carBrand,
+            color,
+            observation,
+            discount,
+            status
+        } = req.body;
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         let protocol = await manageProtocol();
-        let cars = new Cars({client, date, service, paymentMethod, licensePlate, carBrand, protocol, color, observation, discount, status});
+        let cars = new Cars({client, date, service, paymentMethod, observation, discount, status});
+        cars.protocol = protocol;
+        cars.licensePlate = licensePlate;
+        cars.carBrand = carBrand;
+        cars.color = color;
+        cars.nameClient = nameClient;
         let plates = new Plates({client, licensePlate});
-        cars.save().then(car => {
-            Plates.findOne({licensePlate: licensePlate}).then((plate) => {
-                if(!plate)
-                    plates.save().then(() => views.created(car, "Created", res)).catch((e) => views.error(e, 500, "error", res));
-                else
-                    views.created(car, "Created", res);
+        Client.findOne({_id: client}).then((clients) => {
+            if (!clients)
+                return views.error({"message": "Cliente não encontrado!"}, 404, "Not Found", res);
+            if (!cars.nameClient)
+                cars.nameClient = clients.name;
+            cars.save().then(car => {
+                Plates.findOne({licensePlate: licensePlate}).then((plate) => {
+                    if (!plate)
+                        plates.save().then(() => views.created(car, "Created", res)).catch((e) => views.error(e, 500, "error", res));
+                    else
+                        views.created(car, "Created", res);
+                }).catch((e) => views.error(e, 500, "error", res));
             }).catch((e) => views.error(e, 500, "error", res));
         }).catch((e) => views.error(e, 500, "error", res));
     },
@@ -47,7 +70,7 @@ module.exports = {
             for (let position in req.body)
                 cars[position] = req.body[position];
 
-            return views.showUpdated(cars,"Updated", res);
+            return views.showUpdated(cars, "Updated", res);
         }).catch(e => res.json({error: e}));
     },
     delete: async (req, res) => {
