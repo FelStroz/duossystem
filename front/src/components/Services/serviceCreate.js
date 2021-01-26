@@ -327,9 +327,6 @@ const ServiceCreate = props => {
                                             else if (service?.selectedService === "Ducha Completa (G)"){
                                                 service.name = "Ducha Completa (G)";
                                                 service.price = 30;
-                                            }else if(service?.selectedService === "Outro"){
-                                                service.name = "";
-                                                service.price = "";
                                             }
                                         })
                                     }}
