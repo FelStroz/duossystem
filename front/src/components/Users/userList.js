@@ -42,7 +42,7 @@ export const UserList = props => {
         <SimpleList
           primaryText={record => record.name}
           secondaryText={record => record.email}
-          tertiaryText={record => (record.admin) ? "ADMIN": ""}
+          tertiaryText={record => (record.isAdmin) ? "ADMIN": ""}
         />
       ) : (
         <Datagrid rowClick="edit">

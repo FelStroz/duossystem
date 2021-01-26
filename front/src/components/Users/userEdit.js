@@ -12,8 +12,6 @@ import {
 import {makeStyles} from '@material-ui/core/styles';
 import BackButton from "../BackButton";
 import {useMediaQuery} from "@material-ui/core";
-import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
 
 const UserName = ({record}) => {
   return <span>Editar Usuário {record.name}</span>;

@@ -45,7 +45,7 @@ export const UserCreate = props => {
                 <TextInput source="name" validate={[required()]}/>
                 <TextInput source="email" validate={[required()]}/>
                 <PasswordInput source="password" validate={[required()]}/>
-                <BooleanInput label="Administrador" source="idAdmin"/>
+                <BooleanInput label="Administrador" source="isAdmin"/>
             </SimpleForm>
         </Create>
     );
