@@ -18,8 +18,9 @@ import CakeIcon from '@material-ui/icons/Cake';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import SimpleBar from "simplebar-react";
-import {useHistory} from 'react-router-dom';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useHistory} from "react-router-dom";
+import config from "../../config.json";
 
 const useStyles = makeStyles({
     link: {
@@ -94,11 +95,48 @@ const ClientActions = ({
 const ClientPagination = props => <Pagination label="Itens por Página"
                                               rowsPerPageOptions={[5, 9, 10, 15, 20, 30, 50]} {...props} />;
 
-export const ClientList = props => {
-    const [count, setCount] = useState(0);
-    useHistory().location.state = count;
+async function getClients() {
+    let url = `${config.backUrl}/clients`;
+    let headers = {'Content-Type': "application/json", authorization: `Bearer ${localStorage.getItem("authToken")}`};
 
+    let response = await fetch(url, {method: 'GET', headers}).catch((e) => console.log(e));
+    if (response.status !== 200) return Promise.reject(await response.json());
+    let json;
+
+    try {
+        json = await response.json();
+    } catch (e) {
+        return Promise.reject('Erro desconhecido, tente novamente mais tarde.');
+    }
+
+    return json;
+}
+
+export const ClientList = props => {
+    const [birthdayCount, setBirthdayCount] = useState(0);
+    const [frequencyCount, setfrequencyCount] = useState(0);
     const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
+    useEffect(() => {
+        getClients().then((data) => {
+            let numberOfBirthdays = 0, numberOfFrequency = 0, getDate = new Date();
+            data.data.map((client) => {
+                let birthday = new Date(client.birthday)
+                if(birthday.getUTCDate() === getDate.getDate() && (birthday.getUTCMonth() + 1) === (getDate.getUTCMonth() + 1)){
+                    numberOfBirthdays++;
+                }
+                let daysMissing = parseInt(formattedDateSubtract(getDate.toISOString(), client.updatedAt, "DD"));
+                if(daysMissing > 30 ||  daysMissing > 15){
+                    numberOfFrequency++;
+                }
+                setBirthdayCount(numberOfBirthdays);
+                setfrequencyCount(numberOfFrequency);
+            });
+        });
+    },[]);
+    console.log(birthdayCount,frequencyCount);
+    localStorage.setItem("birthdayCount", `${birthdayCount}`);
+    localStorage.setItem("frequencyCount", `${frequencyCount}`);
+
     return (
         <SimpleBar style={{maxHeight: '100%'}}>
             <List title="Lista de Clientes" bulkActionButtons={false} filters={<ClientFilter/>}
@@ -121,7 +159,7 @@ export const ClientList = props => {
                         <TextField label="Endereço" source="address"/>
                         <ClientNumberServices label="Número de Serviços"/>
                         <ButtonShow label="Listagem de Serviços"/>
-                        <ClientFrequency nonFrequency={setCount} label="Assiduidade"/>
+                        <ClientFrequency label="Assiduidade"/>
                     </Datagrid>
                 )}
             </List>

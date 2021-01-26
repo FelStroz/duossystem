@@ -9,12 +9,20 @@ export default {
         if(resource === 'clients')
             resource = 'clients?populate=services'
         if(resource === 'cars' || resource === undefined)
-            if(params.filter.timeInterval){
-                resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}`
-                delete params.filter.timeInterval;
-            }
-            else
-                resource = 'cars?populate=client'
+            if(params.filter.timeInterval)
+                if(params.filter.serviceName){
+                    resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}&serviceName=${params.filter.serviceName}`;
+                    delete params.filter.serviceName;
+                    delete params.filter.timeInterval;
+                }else{
+                    resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}`;
+                    delete params.filter.timeInterval;
+                }
+            else if(params.filter.serviceName){
+                 resource = `cars?populate=client&serviceName=${params.filter.serviceName}`;
+                 delete params.filter.serviceName;
+            }else
+                resource = 'cars?populate=client';
         if(resource === 'create-service'){
             resource = 'cars?populate=client&timestamp=day';
             params.pagination.perPage = 3;

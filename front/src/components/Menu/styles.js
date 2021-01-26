@@ -6,6 +6,9 @@ export const MenuItem = styled(MenuItemLink)`
         background-color: #0075ff80;
         color: white;
     }
+    ${props => props.key === "clients" && css`
+        display: flex;
+    `}
     ${props => props.selected && css`
         background-color: #0075ff !important;
         border-radius: 10px;

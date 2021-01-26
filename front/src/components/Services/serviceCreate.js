@@ -103,7 +103,6 @@ const services = [
     {id: 'Ducha Completa (P)', name: 'Ducha Completa (P)'},
     {id: 'Ducha Completa (G)', name: 'Ducha Completa (G)'},
     {id: 'Outro', name: 'Outro'},
-
 ];
 
 const FieldChipClient = ({record}) => {

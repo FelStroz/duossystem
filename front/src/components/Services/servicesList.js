@@ -26,6 +26,7 @@ const ServicesFilter = (props) => (
         <TextInput label="Nome do Cliente" source={"nameClient"}/>
         <TextInput label="Placa do Carro" source="licensePlate"/>
         <TextInput label="Modelo" source="carBrand"/>
+        <TextInput label="Serviço Realizado" source="serviceName"/>
         <SelectInput label="Método" source="paymentMethod" choices={choices}
                      optionText="name"/>
         <SelectInput label="Status" source="status" choices={status}

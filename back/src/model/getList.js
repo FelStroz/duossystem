@@ -1,5 +1,5 @@
 module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
-    let { pagination, sort, filter: filters, populate, startDate, endDate } = queryData;
+    let { pagination, sort, filter: filters, populate, startDate, endDate, serviceName } = queryData;
 
     try { pagination = JSON.parse(pagination) } catch (e) { if(!pagination) pagination = {} };
     try { sort = JSON.parse(sort) } catch (e) { if(!sort) sort = {} };
@@ -30,6 +30,13 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
         query = {
             ...query,
             date: {$gte: baseDate, $lte: lastDate},
+        }
+    }
+
+    if(serviceName){
+        query = {
+            ...query,
+            "service.name": {$regex: serviceName, $options: "i" },
         }
     }
 
