@@ -7,6 +7,7 @@
     "dev": "nodemon src/bin/www"
   },
   "dependencies": {
+    "add-subtract-date": "^1.0.15",
     "bcrypt": "^5.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",

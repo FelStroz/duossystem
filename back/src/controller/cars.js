@@ -1,50 +1,88 @@
 const Cars = require('../model/cars');
 const List = require('../model/getList');
-const Clients = require('../model/clients');
+const Client = require('../model/clients');
+const Plates = require('../model/plates');
+const views = require('../view/cars');
+const {manageProtocol} = require('../middleware/protocol');
 
 module.exports = {
     create: async (req, res) => {
-        if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
-        let cars = new Cars(req.body);
-        cars.save().then(car => {
-            return res.json({status: "created", data: car});
-        }).catch((e) => res.json({error: e.message}));
+        let {
+            client,
+            date,
+            service,
+            paymentMethod,
+            licensePlate,
+            nameClient,
+            carBrand,
+            color,
+            observation,
+            discount,
+            status
+        } = req.body;
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+        let protocol = await manageProtocol();
+        let cars = new Cars({client, date, service, paymentMethod, observation, discount, status});
+        cars.protocol = protocol;
+        cars.licensePlate = licensePlate;
+        cars.carBrand = carBrand;
+        cars.color = color;
+        cars.nameClient = nameClient;
+        let plates = new Plates({client, licensePlate});
+        Client.findOne({_id: client}).then((clients) => {
+            if (!clients)
+                return views.error({"message": "Cliente não encontrado!"}, 404, "Not Found", res);
+            if (!cars.nameClient)
+                cars.nameClient = clients.name;
+            cars.save().then(car => {
+                Plates.findOne({licensePlate: licensePlate}).then((plate) => {
+                    if (!plate)
+                        plates.save().then(() => views.created(car, "Created", res)).catch((e) => views.error(e, 500, "error", res));
+                    else
+                        views.created(car, "Created", res);
+                }).catch((e) => views.error(e, 500, "error", res));
+            }).catch((e) => views.error(e, 500, "error", res));
+        }).catch((e) => views.error(e, 500, "error", res));
     },
     getOne: async (req, res) => {
-        if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
-        Cars.findById(req.params.id).populate('client').then(cars => {
-            if (!cars) return res.json({error: 'Not Found'});
-            return res.json({status: "finded", data: cars});
-        }).catch((e) => res.json({error: e}));
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+        Cars.findById(req.params.id).populate('client').then(car => {
+            if (!car) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
+            return views.showOne(car, res);
+        }).catch((e) => views.error(e, 500, "error", res));
     },
     getList: async (req, res) => {
-        if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         List(Cars, req.query).then(({data, total}) =>
-            res.status(200).json({
-                data: data.map((item) => item),
-                total
-            })).catch((e) => res.json({error: e}));
+            views.showList(data, total, res)
+        ).catch((e) => views.error(e, 500, "error", res));
     },
-    update: async (req, res) => { // ATUALIZAR OS SERVIÇOS A PARTIR DAQUI
+    update: async (req, res) => {
         let {id} = req.params;
-        if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         Cars.findByIdAndUpdate(
             id,
             req.body,
             {new: true}
-        ).then(async cars => {
-            if (!cars) return res.json({error: 'Not Found'});
-            for (let position in req.body) {
+        ).populate('client').then(async cars => {
+            if (!cars) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
+
+            for (let position in req.body)
                 cars[position] = req.body[position];
-            }
-            return res.json({status: "updated", data: cars});
+
+            return views.showUpdated(cars, "Updated", res);
         }).catch(e => res.json({error: e}));
     },
     delete: async (req, res) => {
-        if (!req.users.isAdmin) return res.json({error: 'unauthorized'});
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         Cars.findByIdAndDelete(req.params.id).then(cars => {
-            if (!cars) return res.json({error: 'Not Found'});
-            return res.json({status: "deleted", data: cars});
-        }).catch(e => res.json({error: e.message}));
+            if (!cars) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
+
+            Client.findByIdAndUpdate(cars.client, {$pull: {services: req.params.id}}).then(client => {
+                if (!client) return views.error({"message": "Cliente não encontrado!"}, 404, "Not Found", res);
+                return views.showDeleted(cars, "Deleted", res);
+            }).catch(e => views.error(e, 500, "error", res));
+
+        }).catch(e => views.error(e, 500, "error", res));
     },
 }

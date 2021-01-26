@@ -1,13 +1,15 @@
 module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
-    let { pagination, sort, filter: filters, populate } = queryData;
+    let { pagination, sort, filter: filters, populate, startDate, endDate } = queryData;
 
-    try { pagination = JSON.parse(pagination) } catch (e) {};
-    try { sort = JSON.parse(sort) } catch (e) {};
-    try { filters = JSON.parse(filters) } catch (e) {};
+    try { pagination = JSON.parse(pagination) } catch (e) { if(!pagination) pagination = {} };
+    try { sort = JSON.parse(sort) } catch (e) { if(!sort) sort = {} };
+    try { filters = JSON.parse(filters) } catch (e) { if(!filters) filters = {} };
 
     let { page = 1, perPage = 0 } = pagination;
-    let { field , order } = sort;
+    let { field = 'createdAt', order } = sort;
     let { q, qField } = filters;
+
+    if (field === '') field = 'createdAt';
 
     let query = q ? {
         [qField || qFieldDefault]: {
@@ -19,10 +21,22 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
     delete filters['q'];
     delete filters['qField'];
 
+    if(startDate || endDate){
+        let baseDate = new Date(startDate), lastDate = new Date(endDate);
+        if(startDate == "undefined")
+            baseDate = new Date('01-01-1700');
+        if(endDate == "undefined")
+            lastDate = new Date();
+        query = {
+            ...query,
+            date: {$gte: baseDate, $lte: lastDate},
+        }
+    }
+
     for(let filter in filters) {
         query = {
             ...query,
-            [filter]: filters[filter]
+            [filter]: (typeof filters[filter] === 'string')? { $regex: filters[filter], $options: "i" }: filters[filter]
         };
     }
 

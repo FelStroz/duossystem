@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-const {isDate, isMobilePhone} = require('validator');
+const {isDate} = require('validator');
 
 let StaffSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
         maxlength: 70,
-        lowercase: true,
+        unique: true
     },
     birthday: {
         type: Date,
@@ -22,9 +22,8 @@ let StaffSchema = new mongoose.Schema({
         }
     }],
     fouls: [{
-        number: {
-            type: Number,
-            default: 0,
+        reason: {
+            type: String,
         },
         date: {
             type: Date,
@@ -33,14 +32,13 @@ let StaffSchema = new mongoose.Schema({
     }],
     phone: {
         type: String,
-        validate: [isMobilePhone, 'Invalid phone number'],
         unique: true,
     },
     profession: {
         type: String,
         required: true,
     },
-    status: {
+    actualStatus: {
       type: String,
       required: true,
       default: 'Ativo'
