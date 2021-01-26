@@ -26,7 +26,7 @@ const ServicesFilter = (props) => (
         <SelectInput label="Método" source="paymentMethod" choices={choices}
                      optionText="name"/>
         <SelectInput label="Status" source="status" choices={status}
-                     optionText="name" initialValue="Em aberto"/>
+                     optionText="name" />
         <DateInput source="timeInterval.startDate" label="Data de início"/>
         <DateInput source="timeInterval.endDate" initialValue={new Date} label="Data de término"/>
     </Filter>

@@ -28,7 +28,7 @@ export default {
                     resolve(response.data);
                 })
                 .catch(e => {
-                    console.log(e.response.data);
+                    // console.log(e.response.data);
                     return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
                 })
         })
@@ -183,7 +183,7 @@ export default {
                     resolve(response.data);
                 })
                 .catch(e => {
-                    console.log(e);
+                    // console.log(e);
                     return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
                 })
         })

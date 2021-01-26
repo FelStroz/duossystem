@@ -34,14 +34,22 @@ export default function AdminPage() {
                 permission => [
                     <Resource options={{ label: 'Serviços' }} name="cars" list={ServiceList} icon={DriveEtaIcon}/>,
                     <Resource options={{ label: 'Novo Serviço' }} name="create-service" create={ServiceCreate} icon={AddToQueueIcon}/>,
-                    <Resource options={{ label: 'Clientes' }} name="clients" edit={ClientEdit} show={ClientShow} list={ClientList} icon={PeopleIcon}/>,
-                    <Resource options={{ label: 'Finanças' }} name="finantial" icon={LocalAtmIcon}/>,
-                    <Resource options={{ label: 'Staff' }} name="staff" list={StaffList} edit={StaffEdit} create={StaffCreate} icon={AssignmentIndIcon} />,
+                    (permission === "true" ?
+                        <Resource options={{ label: 'Clientes' }} name="clients" edit={ClientEdit} show={ClientShow} list={ClientList} icon={PeopleIcon}/>
+                        :false
+                    ),
+                    (permission === "true" ?
+                        <Resource options={{ label: 'Finanças' }} name="finantial" icon={LocalAtmIcon}/>
+                        : false
+                    ),
+                    (permission === "true" ?
+                        <Resource options={{ label: 'Staff' }} name="staff" list={StaffList} edit={StaffEdit} create={StaffCreate} icon={AssignmentIndIcon} />
+                        : false
+                    ),
                     (permission === "true" ?
                         <Resource options={{ label: 'Usuários' }} name="users" list={UserList} edit={UserEdit} create={UserCreate} icon={AccountCircleIcon}/>
                         : false
                     ),
-
                 ]
             }
         </Admin>

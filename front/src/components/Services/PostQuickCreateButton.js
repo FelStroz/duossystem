@@ -45,7 +45,7 @@ function PostQuickCreateButton({ onChange }) {
                     notify("Cliente Criado");
                 },
                 onFailure: ({ error }) => {
-                    console.log(error);
+                    // console.log(error);
                     notify(error.message, 'error');
                 }
             }
