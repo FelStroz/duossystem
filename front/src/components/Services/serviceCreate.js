@@ -341,10 +341,12 @@ const ServiceCreate = props => {
                 </TabbedForm>
             </Create>
             <List style={{marginTop: 5}}
-                  empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço
+                  empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foi realizado nenhum serviço
                       hoje!</h2>}
                   pagination={<ServicesPagination/>} perPage={3} actions={false}
-                  bulkActionButtons={false} {...props}>
+                  bulkActionButtons={false}
+                  filter={{ timeInterval: {startDate: `${(today.getUTCMonth() + 1 < 10)? `0${today.getUTCMonth() + 1}`: today.getUTCMonth() + 1 }-${today.getUTCDate()}-${today.getUTCFullYear()}`}}}
+                  {...props}>
                 <Datagrid rowStyle={ServicesShowRowStyle}>
                     <TextField label="Cliente" source="client.name"/>
                     <TextField label="Status" source="status"/>

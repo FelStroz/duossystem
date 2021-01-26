@@ -27,6 +27,7 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
             baseDate = new Date('01-01-1700');
         if(endDate == "undefined")
             lastDate = new Date();
+        console.log(baseDate, lastDate)
         query = {
             ...query,
             date: {$gte: baseDate, $lte: lastDate},
@@ -49,6 +50,5 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
 
     let total = await Model.countDocuments(query).catch(err => Promise.reject(err));
     let data = await Model.find(query).limit(parseInt(perPage)).skip(perPage * (page - 1)).sort({[field]: order}).populate(populate).catch(err => Promise.reject(err));
-
     return { data, total };
 };

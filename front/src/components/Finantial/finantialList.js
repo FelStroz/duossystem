@@ -135,37 +135,52 @@ const exporter = (services, timestamp) => {
     let timeString;
     (timestamp === "year") ? timeString = "Ano" : (timestamp === "month")? timeString = "Mês" : timeString = "Dia";
     if (services.length >= 1){
-    const servicesForExport = services.map(service => {
-        const {_id, updatedAt, createdAt, __v, client, ...servicesForExport} = service;
-        servicesForExport.Nome = service.client.name;
-        servicesForExport.Protocolo = service.protocol;
-        servicesForExport.Serviço = service.service[0].name;
-        servicesForExport.Preço = service.service[0].price;
-        servicesForExport.Modelo = service.carBrand;
-        servicesForExport.Placa = service.licensePlate;
-        servicesForExport.Cor = service.color;
-        servicesForExport.Desconto = service.discount;
-        servicesForExport.Total = 'R$ ' + `${service.service[0].price - service.discount}` + ',00';
-        servicesForExport.Data = `${new Date(service.date).toLocaleDateString()}`;
-        servicesForExport.Observação = (service.observation !== "") ? service.observation : "Sem observação";
-        servicesForExport.Método = service.paymentMethod;
-        servicesForExport.Status = service.status;
+        let allServices = [];
+        for(let serv in services){
+            let servicesForExport = {}, total = 0;
+            let service = services[serv];
+            for(let namePrice of service.service){
+                if(!servicesForExport.Serviço)
+                    servicesForExport.Serviço = namePrice.name;
+                else
+                    servicesForExport.Serviço += "/" + namePrice.name;
+                total += namePrice.price;
+            }
+            delete service._id;
+            delete service.updatedAt;
+            delete service.createdAt;
+            delete service.__v;
+            delete service.client;
 
-        delete servicesForExport.observation;
-        delete servicesForExport.status;
-        delete servicesForExport.protocol;
-        delete servicesForExport.date;
-        delete servicesForExport.paymentMethod;
-        delete servicesForExport.licensePlate;
-        delete servicesForExport.carBrand
-        delete servicesForExport.color;
-        delete servicesForExport.observation;
-        delete servicesForExport.discount;
-        delete servicesForExport.service;
+            servicesForExport.Nome = service.nameClient;
+            servicesForExport.Protocolo = service.protocol;
+            servicesForExport.Preço = 'R$ ' + `${total}` + ',00';
+            servicesForExport.Modelo = service.carBrand;
+            servicesForExport.Placa = service.licensePlate;
+            servicesForExport.Cor = service.color;
+            servicesForExport.Desconto = 'R$ ' + `${service.discount}` + ',00';
+            servicesForExport.Total = 'R$ ' + `${total - service.discount}` + ',00';
+            servicesForExport.Data = `${new Date(service.date).toLocaleDateString()}`;
+            servicesForExport.Observação = (service.observation !== "") ? service.observation : "Sem observação";
+            servicesForExport.Método = service.paymentMethod;
+            servicesForExport.Status = service.status;
 
-        return servicesForExport;
-    })
-    jsonExport(servicesForExport, {
+            delete servicesForExport.observation;
+            delete servicesForExport.status;
+            delete servicesForExport.protocol;
+            delete servicesForExport.date;
+            delete servicesForExport.paymentMethod;
+            delete servicesForExport.licensePlate;
+            delete servicesForExport.carBrand
+            delete servicesForExport.color;
+            delete servicesForExport.observation;
+            delete servicesForExport.discount;
+            delete servicesForExport.service;
+            delete servicesForExport.nameClient;
+
+            allServices.push(servicesForExport);
+        }
+    jsonExport(allServices, {
         headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
         rowDelimiter: ';',
     }, (err, csv) => {

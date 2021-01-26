@@ -1,6 +1,5 @@
 import axios from 'axios';
 import config from '../../config.json';
-import {stringify} from "query-string";
 
 export default {
     getList: (resource, params) => {
@@ -23,8 +22,10 @@ export default {
                  delete params.filter.serviceName;
             }else
                 resource = 'cars?populate=client';
+
         if(resource === 'create-service'){
-            resource = 'cars?populate=client&timestamp=day';
+            // console.log(params.filter.timeInterval.startDate);
+            resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=undefined`;
             params.pagination.perPage = 3;
         }
 

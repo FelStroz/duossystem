@@ -133,7 +133,6 @@ export const ClientList = props => {
             });
         });
     },[]);
-    console.log(birthdayCount,frequencyCount);
     localStorage.setItem("birthdayCount", `${birthdayCount}`);
     localStorage.setItem("frequencyCount", `${frequencyCount}`);
 
