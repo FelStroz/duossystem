@@ -59,7 +59,6 @@ module.exports = {
     },
     update: async (req, res) => {
         let {id} = req.params;
-        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         Cars.findByIdAndUpdate(
             id,
             req.body,
@@ -72,6 +71,24 @@ module.exports = {
 
             return views.showUpdated(cars, "Updated", res);
         }).catch(e => res.json({error: e}));
+    },
+    updateMany: async (req, res) => {
+        if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
+        let {ids} = req.query, arrayIds = ids.split(','), car = [];
+        for(let id of arrayIds){
+            Cars.findByIdAndUpdate(
+                id,
+                req.body,
+                {new: true}
+            ).populate('client').then(async cars => {
+                if (!cars) return views.error({"message": "Serviço não encontrado!"}, 404, "Not Found", res);
+
+                for (let position in req.body)
+                    cars[position] = req.body[position];
+                car.push(cars);
+            }).catch(e => res.json({error: e}));
+        }
+        return views.showList(car, car.length, res);
     },
     delete: async (req, res) => {
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);

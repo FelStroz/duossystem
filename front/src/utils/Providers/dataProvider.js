@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from '../../config.json';
+import {stringify} from "query-string";
 
 export default {
     getList: (resource, params) => {
@@ -132,6 +133,18 @@ export default {
 
         return new Promise((resolve, reject) => {
             axios.put(`${config.backUrl}/${resource}/${params.id}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                .then((response) => {
+                    resolve(response.data);
+                })
+                .catch(e => {
+                    return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
+                })
+        })
+    },
+
+    updateMany: (resource, params) => {
+        return new Promise((resolve, reject) => {
+            axios.put(`${config.backUrl}/${resource}?ids=${params.ids}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
                 .then((response) => {
                     resolve(response.data);
                 })

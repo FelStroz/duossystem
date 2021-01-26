@@ -10,6 +10,7 @@ routes.post('/', cars.create);
 routes.get('/:id', cars.getOne);
 routes.get('/', cars.getList);
 routes.put('/:id', cars.update);
+routes.put('/', cars.updateMany);
 routes.delete('/:id', cars.delete);
 
 module.exports = routes;
