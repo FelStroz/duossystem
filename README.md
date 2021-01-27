@@ -1,1 +1,1 @@
-# duossystem
+# Duos System
