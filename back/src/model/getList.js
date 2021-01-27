@@ -27,7 +27,6 @@ module.exports = async (Model, queryData = {}, qFieldDefault = 'name') => {
             baseDate = new Date('01-01-1700');
         if(endDate == "undefined")
             lastDate = new Date();
-        console.log(baseDate, lastDate)
         query = {
             ...query,
             date: {$gte: baseDate, $lte: lastDate},

@@ -27,6 +27,7 @@ export default {
             // console.log(params.filter.timeInterval.startDate);
             resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=undefined`;
             params.pagination.perPage = 3;
+            delete params.filter.timeInterval;
         }
 
         return new Promise((resolve, reject) => {
