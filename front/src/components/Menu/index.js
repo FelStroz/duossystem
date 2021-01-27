@@ -18,6 +18,8 @@ const Menu = ({onMenuClick, logout}) => {
     const resources = useSelector(getResources);
     const completeName = localStorage.getItem('username') ? localStorage.getItem('username') : 'abc';
     const firstLetter = completeName ? completeName.substring(0, 1).toLowerCase() : 'a';
+    let birthdayCount = localStorage.getItem("birthdayCount");
+    let frequencyCount = localStorage.getItem("frequencyCount");
 
     return (
         <Container>
@@ -40,16 +42,45 @@ const Menu = ({onMenuClick, logout}) => {
                             sidebarIsOpen={open}
                             selected={pathname.includes(resource.name)}
                         />
-                    else
+                    else if (resource.name === "clients")
                         return <MenuItem
                         key={resource.name}
                         to={`/${resource.name}`}
                         primaryText={resource.options && resource.options.label || resource.name}
-                        leftIcon={createElement(resource.icon)}
+                        leftIcon={(birthdayCount || frequencyCount)
+                            ?
+                            <div>
+                                <div style={{display: "flex", flexDirection: "row"}}>
+                                {(birthdayCount && birthdayCount !== "0")?
+                                <div style={{marginLeft: '-5px', width: '15px', height: '15px', backgroundColor: 'orange', borderRadius: '10px', display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                    <text style={{fontSize: '0.75rem', fontWeight: "bold"}}>{birthdayCount}</text>
+                                </div>
+                                    : <div/>
+                                }
+                                {(frequencyCount && frequencyCount !== "0")?
+                                    <div style={{marginLeft: '5px',width: '15px', height: '15px', backgroundColor: 'orangered', borderRadius: '10px', display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                        <text style={{fontSize: '0.75rem', fontWeight: "bold"}}>{frequencyCount}</text>
+                                    </div>
+                                    : <div/>
+                                }
+                                </div>
+                                <div>{createElement(resource.icon)}</div>
+                            </div>
+                            : createElement(resource.icon)}
                         onClick={onMenuClick}
                         sidebarIsOpen={open}
                         selected={pathname.includes(resource.name)}
                     />
+                    else
+                        return <MenuItem
+                            key={resource.name}
+                            to={`/${resource.name}`}
+                            primaryText={resource.options && resource.options.label || resource.name}
+                            leftIcon={createElement(resource.icon)}
+                            onClick={onMenuClick}
+                            sidebarIsOpen={open}
+                            selected={pathname.includes(resource.name)}
+                        />
                 })}
             </div>
             <div>

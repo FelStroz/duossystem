@@ -17,12 +17,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import {ServiceEdit} from "./servicesEdit";
 import SimpleBar from "simplebar-react";
 import jsonExport from 'jsonexport';
+import { Fragment } from 'react';
+import FaturadoManyButton from '../FaturadoManyButton';
+import PayManyButton from '../PayManyButton';
 
 const ServicesFilter = (props) => (
     <Filter {...props}>
         <TextInput label="Nome do Cliente" source={"nameClient"}/>
         <TextInput label="Placa do Carro" source="licensePlate"/>
         <TextInput label="Modelo" source="carBrand"/>
+        <TextInput label="Serviço Realizado" source="serviceName"/>
         <SelectInput label="Método" source="paymentMethod" choices={choices}
                      optionText="name"/>
         <SelectInput label="Status" source="status" choices={status}
@@ -160,10 +164,17 @@ const exporter = (services) => {
     });
 };
 
+const ServicesBulkActionButtons = props => (
+    <Fragment>
+        <FaturadoManyButton label="Marcar Faturado" {...props} />
+        <PayManyButton label="Marcar Pago" {...props} />
+    </Fragment>
+);
+
 export const ServiceList = (props) => {
     return (
         <SimpleBar style={{maxHeight: '100%'}}>
-            <List title="Lista de Serviços" sort={{field: 'createdAt', order: 'DESC'}} bulkActionButtons={false}
+            <List title="Lista de Serviços" sort={{field: 'createdAt', order: 'DESC'}} bulkActionButtons={<ServicesBulkActionButtons/>}
                   actions={<ServicesActions/>}
                   exporter={exporter}
                   pagination={<ServicesPagination/>} perPage={6} filters={<ServicesFilter/>} {...props}>

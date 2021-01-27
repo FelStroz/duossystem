@@ -103,7 +103,6 @@ const services = [
     {id: 'Ducha Completa (P)', name: 'Ducha Completa (P)'},
     {id: 'Ducha Completa (G)', name: 'Ducha Completa (G)'},
     {id: 'Outro', name: 'Outro'},
-
 ];
 
 const FieldChipClient = ({record}) => {
@@ -276,64 +275,52 @@ const ServiceCreate = props => {
                                                 removeButton={<DeleteForeverIcon cursor={'pointer'}/>}>
                                 <SelectInput label="Seleção de Serviço" source="selectedService" choices={services}
                                              optionText="name" validate={[required()]}/>
-                                <TextInput source="name" label="Nome do Serviço" validate={[required()]}/>
-                                <NumberInput label="Valor" source="price"
-                                                     validate={[required(), minValue(0)]} min={0}
-                                                     InputProps={{
-                                                         startAdornment: <InputAdornment
-                                                             position="start">R$</InputAdornment>,
-                                                     }}/>
                                 <FormDataConsumer>
                                     {({
                                           formData, ...rest
                                       }) => {
                                         formData.service.map((service) => {
-                                            if (service?.selectedService === "Lavagem Simples (P)"){
+                                            if (service?.selectedService === "Lavagem Simples (P)") {
                                                 service.name = "Lavagem Simples (P)";
                                                 service.price = 40;
-                                            }
-                                            else if (service?.selectedService === "Lavagem Simples (G)"){
+                                            } else if (service?.selectedService === "Lavagem Simples (G)") {
                                                 service.name = "Lavagem Simples (G)";
                                                 service.price = 45;
-                                            }
-                                            else if (service?.selectedService === "Lavagem Completa (P)"){
+                                            } else if (service?.selectedService === "Lavagem Completa (P)") {
                                                 service.name = "Lavagem Completa (P)";
                                                 service.price = 45;
-                                            }
-                                            else if (service?.selectedService === "Lavagem Completa (G)"){
+                                            } else if (service?.selectedService === "Lavagem Completa (G)") {
                                                 service.name = "Lavagem Completa (G)";
                                                 service.price = 50;
-                                            }
-                                            else if (service?.selectedService === "Lavagem Geral (P)"){
+                                            } else if (service?.selectedService === "Lavagem Geral (P)") {
                                                 service.name = "Lavagem Geral (P)";
                                                 service.price = 80;
-                                            }
-                                            else if (service?.selectedService === "Lavagem Geral (G)"){
+                                            } else if (service?.selectedService === "Lavagem Geral (G)") {
                                                 service.name = "Lavagem Geral (G)";
                                                 service.price = 100;
-                                            }
-                                            else if (service?.selectedService === "Ducha Simples (P)"){
+                                            } else if (service?.selectedService === "Ducha Simples (P)") {
                                                 service.name = "Ducha Simples (P)";
                                                 service.price = 20;
-                                            }
-                                            else if (service?.selectedService === "Ducha Simples (G)"){
+                                            } else if (service?.selectedService === "Ducha Simples (G)") {
                                                 service.name = "Ducha Simples (G)";
                                                 service.price = 25;
-                                            }
-                                            else if (service?.selectedService === "Ducha Completa (P)"){
+                                            } else if (service?.selectedService === "Ducha Completa (P)") {
                                                 service.name = "Ducha Completa (P)";
                                                 service.price = 25;
-                                            }
-                                            else if (service?.selectedService === "Ducha Completa (G)"){
+                                            } else if (service?.selectedService === "Ducha Completa (G)") {
                                                 service.name = "Ducha Completa (G)";
                                                 service.price = 30;
-                                            }else if(service?.selectedService === "Outro"){
-                                                service.name = "";
-                                                service.price = "";
                                             }
                                         })
                                     }}
                                 </FormDataConsumer>
+                                <TextInput source="name" label="Nome do Serviço" />
+                                <NumberInput label="Valor" source="price"
+                                             validate={[minValue(0)]} min={0}
+                                             InputProps={{
+                                                 startAdornment: <InputAdornment
+                                                     position="start">R$</InputAdornment>,
+                                             }}/>
                             </SimpleFormIterator>
                         </ArrayInput>
                         <div className={"divMarcaCor"}>
@@ -345,10 +332,12 @@ const ServiceCreate = props => {
                 </TabbedForm>
             </Create>
             <List style={{marginTop: 5}}
-                  empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foram realizados nenhum serviço
+                  empty={<h2 style={{marginTop: '40px', fontFamily: 'cursive'}}>Não foi realizado nenhum serviço
                       hoje!</h2>}
                   pagination={<ServicesPagination/>} perPage={3} actions={false}
-                  bulkActionButtons={false} {...props}>
+                  bulkActionButtons={false}
+                  filter={{timeInterval: {startDate: `${(today.getUTCMonth() + 1 < 10) ? `0${today.getUTCMonth() + 1}` : today.getUTCMonth() + 1}-${today.getUTCDate()}-${today.getUTCFullYear()}`}}}
+                  {...props}>
                 <Datagrid rowStyle={ServicesShowRowStyle}>
                     <TextField label="Cliente" source="client.name"/>
                     <TextField label="Status" source="status"/>
