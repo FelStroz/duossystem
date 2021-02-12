@@ -133,14 +133,14 @@ const useStyles = makeStyles((theme) => ({
 
 const exporter = (services, timestamp) => {
     let timeString;
-    (timestamp === "year") ? timeString = "Ano" : (timestamp === "month")? timeString = "Mês" : timeString = "Dia";
-    if (services.length >= 1){
+    (timestamp === "year") ? timeString = "Ano" : (timestamp === "month") ? timeString = "Mês" : timeString = "Dia";
+    if (services.length >= 1) {
         let allServices = [];
-        for(let serv in services){
+        for (let serv in services) {
             let servicesForExport = {}, total = 0;
             let service = services[serv];
-            for(let namePrice of service.service){
-                if(!servicesForExport.Serviço)
+            for (let namePrice of service.service) {
+                if (!servicesForExport.Serviço)
                     servicesForExport.Serviço = namePrice.name;
                 else
                     servicesForExport.Serviço += "/" + namePrice.name;
@@ -180,16 +180,16 @@ const exporter = (services, timestamp) => {
 
             allServices.push(servicesForExport);
         }
-    jsonExport(allServices, {
-        headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
-        rowDelimiter: ';',
-    }, (err, csv) => {
-        let link = window.document.createElement("a");
-        link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csv.toString()));
-        link.setAttribute("download", `Faturamento no ${timeString}.csv`);
-        link.click();
-    });
-    }else{
+        jsonExport(allServices, {
+            headers: ['Protocolo', 'Status', 'Nome', 'Serviço', 'Modelo', 'Placa', 'Cor', 'Data', 'Método', 'Observação', 'Preço', 'Desconto', 'Total'],
+            rowDelimiter: ';',
+        }, (err, csv) => {
+            let link = window.document.createElement("a");
+            link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csv.toString()));
+            link.setAttribute("download", `Faturamento no ${timeString} ${(new Date().getUTCMonth() + 1 < 10)? `0${new Date().getUTCMonth() + 1}` : new Date().getUTCMonth() + 1}.csv`);
+            link.click();
+        });
+    } else {
         alert("Não há serviços para exportar!");
     }
 };
@@ -285,7 +285,8 @@ const FinantialList = () => {
                     </Card>
                     <Card style={servicesCardStyle}>
                         <div style={containerImageCardStyle}>
-                            <div style={{...imageCardStyle, cursor: 'pointer'}} onClick={() => window.location.replace("http://localhost:3000/admin#/cars")}>
+                            <div style={{...imageCardStyle, cursor: 'pointer'}}
+                                 onClick={() => window.location.replace("http://localhost:3000/admin#/cars")}>
                                 <LocalCarWashIcon style={{color: '#298bff'}}/>
                             </div>
                         </div>
@@ -304,7 +305,9 @@ const FinantialList = () => {
                 </div>}
         </div>
         <div style={containerExporter}>
-            <ButtonExporter onMouseOut={handleMouseOut} onMouseOver={handleMouseOver} onClick={() => {exporter(list.services,timestamp)}}>
+            <ButtonExporter onMouseOut={handleMouseOut} onMouseOver={handleMouseOver} onClick={() => {
+                exporter(list.services, timestamp)
+            }}>
                 <div style={{display: 'none', marginRight: '5px'}}>
                     <p>Gerar Excel</p>
                 </div>

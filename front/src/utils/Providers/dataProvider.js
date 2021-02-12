@@ -3,27 +3,27 @@ import config from '../../config.json';
 
 export default {
     getList: (resource, params) => {
-        if(resource === 'users')
+        if (resource === 'users')
             resource = 'admin/users'
-        if(resource === 'clients')
+        if (resource === 'clients')
             resource = 'clients?populate=services'
-        if(resource === 'cars' || resource === undefined)
-            if(params.filter.timeInterval)
-                if(params.filter.serviceName){
+        if (resource === 'cars' || resource === undefined)
+            if (params.filter.timeInterval)
+                if (params.filter.serviceName) {
                     resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}&serviceName=${params.filter.serviceName}`;
                     delete params.filter.serviceName;
                     delete params.filter.timeInterval;
-                }else{
+                } else {
                     resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=${params.filter.timeInterval.endDate}`;
                     delete params.filter.timeInterval;
                 }
-            else if(params.filter.serviceName){
-                 resource = `cars?populate=client&serviceName=${params.filter.serviceName}`;
-                 delete params.filter.serviceName;
-            }else
+            else if (params.filter.serviceName) {
+                resource = `cars?populate=client&serviceName=${params.filter.serviceName}`;
+                delete params.filter.serviceName;
+            } else
                 resource = 'cars?populate=client';
 
-        if(resource === 'create-service'){
+        if (resource === 'create-service') {
             // console.log(params.filter.timeInterval.startDate);
             resource = `cars?populate=client&startDate=${params.filter.timeInterval.startDate}&endDate=undefined`;
             params.pagination.perPage = 3;
@@ -47,13 +47,13 @@ export default {
 
     getOne: (resource, params) => {
         let populate = "";
-        if(resource === 'users')
+        if (resource === 'users')
             resource = 'admin/users'
-        if(resource === 'clients')
+        if (resource === 'clients')
             populate = '?populate=services'
-        if(resource === 'cars')
+        if (resource === 'cars')
             populate = '?populate=client'
-        if(resource === 'plates'){
+        if (resource === 'plates') {
             populate = `?licensePlate=${params.licensePlate}`
             return new Promise((resolve, reject) => {
                 axios.get(`${config.backUrl}/${resource}${populate}`, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
@@ -77,7 +77,7 @@ export default {
     },
 
     getMany: (resource, params) => {
-        if(resource === 'users')
+        if (resource === 'users')
             resource = 'admin/users'
         return new Promise((resolve, reject) => {
             axios.get(`${config.backUrl}/${resource}`, {
@@ -94,7 +94,7 @@ export default {
     },
 
     delete: (resource, params) => {
-        if(resource === 'users')
+        if (resource === 'users')
             resource = 'admin/users'
         return new Promise((resolve, reject) => {
             axios.delete(`${config.backUrl}/${resource}/${params.id}`, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
@@ -108,33 +108,33 @@ export default {
     },
 
     // getManyReference: (resource, params) => {
-        // const {page, perPage} = params.pagination;
-        // const {field, order} = params.sort;
-        // const query = {
-        //     sort: JSON.stringify([field, order]),
-        //     range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-        //     filter: JSON.stringify({
-        //         ...params.filter,
-        //         [params.target]: params.id,
-        //     }),
-        // };
-        // const url = `${process.env.REACT_APP_API_HOST}${resource}?${stringify(query)}`;
-        //
-        // return httpClient(process.env.REACT_APP_API_HOST).then(({headers, json}) => ({
-        //     data: json,
-        //     total: parseInt(headers.get('content-range').split('/').pop(), 10),
-        // }));
+    // const {page, perPage} = params.pagination;
+    // const {field, order} = params.sort;
+    // const query = {
+    //     sort: JSON.stringify([field, order]),
+    //     range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+    //     filter: JSON.stringify({
+    //         ...params.filter,
+    //         [params.target]: params.id,
+    //     }),
+    // };
+    // const url = `${process.env.REACT_APP_API_HOST}${resource}?${stringify(query)}`;
+    //
+    // return httpClient(process.env.REACT_APP_API_HOST).then(({headers, json}) => ({
+    //     data: json,
+    //     total: parseInt(headers.get('content-range').split('/').pop(), 10),
+    // }));
     // },
 
     update: (resource, params) => {
         if (resource === 'users')
             resource = 'admin/users'
-        if (params.data.birthday){
+        if (params.data.birthday) {
             let date = new Date(params.data.birthday);
-            params.data.birthday = `${date.getUTCFullYear()}-${date.getUTCMonth()+1}-${date.getUTCDate()}`;
+            params.data.birthday = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`;
         }
 
-        if (params.data.fouls){
+        if (params.data.fouls) {
             params.data.fouls.map((foul) => {
                 let date = new Date(foul.date);
                 foul.date = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`
@@ -165,50 +165,56 @@ export default {
     },
 
     create: (resource, params) => {
-        if(resource === 'users')
+        if (resource === 'users')
             resource = 'admin/users'
-        if(resource === 'create-service'){
-            resource = 'cars';
-            if(params.data.id)
-                params.data.client = params.data.id;
-        }
-        // if(resource === 'products'){
-        //     let dados = new FormData();
-        //     dados.append('photo', params.data.photo.rawFile);
-        //     dados.append('name', params.data.name);
-        //     dados.append('tecnicalInformation', params.data.tecnicalInformation);
-        //     dados.append('quantityInStock', params.data.quantityInStock);
-        //     dados.append('price', params.data.price);
-        //     dados.append('description', params.data.description);
-        //     dados.append('category', params.data.category);
-        //     return new Promise((resolve, reject) => {
-        //         axios.post(`${config.backUrl}/${resource}`, dados, {
-        //             headers: {
-        //                 authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        //                 'Content-Type': 'multipart/form-data'
-        //             }
-        //         })
-        //             .then((response) => {
-        //                 resolve(response.data);
-        //             })
-        //             .catch(error => {
-        //                 reject(error);
-        //             })
-        //     })
-        // }
-        if(params.data.birthday){
+
+        if (params.data.birthday) {
             let date = new Date(params.data.birthday);
-            params.data.birthday = `${date.getUTCFullYear()}-${date.getUTCMonth()+1}-${date.getUTCDate()}`;
+            params.data.birthday = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`;
         }
-        return new Promise((resolve, reject) => {
-            axios.post(`${config.backUrl}/${resource}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
-                .then((response) => {
-                    resolve(response.data);
+        if (resource === 'create-service') {
+            resource = 'cars';
+            if (params.data.id) {
+                params.data.client = params.data.id;
+                return axios.get(`${config.backUrl}/clients/${params.data.id}`, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                    .then((response) => {
+                        params.data.nameClient = response.data.data.name;
+                        return new Promise((resolve, reject) => {
+                            axios.post(`${config.backUrl}/${resource}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                                .then((response) => {
+                                    resolve(response.data);
+                                })
+                                .catch(e => {
+                                    return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
+                                })
+                        })
+                    })
+                    .catch(e => {
+                        // e.response ? console.log(e.response.data.error.completeMessage) : console.log(e.message);
+                        return e.response ? (e.response.data.error.completeMessage) : (e.message);
+                    })
+            }else
+                return new Promise((resolve, reject) => {
+                    axios.post(`${config.backUrl}/${resource}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                        .then((response) => {
+                            resolve(response.data);
+                        })
+                        .catch(e => {
+                            // console.log(e);
+                            return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
+                        })
                 })
-                .catch(e => {
-                    // console.log(e);
-                    return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
-                })
-        })
+        } else
+            return new Promise((resolve, reject) => {
+                axios.post(`${config.backUrl}/${resource}`, params.data, {headers: {authorization: `Bearer ${localStorage.getItem("authToken")}`}})
+                    .then((response) => {
+                        console.log("Mandou request")
+                        resolve(response.data);
+                    })
+                    .catch(e => {
+                        // console.log(e);
+                        return e.response ? reject(e.response.data.error.completeMessage) : reject(e.message);
+                    })
+            })
     },
 };

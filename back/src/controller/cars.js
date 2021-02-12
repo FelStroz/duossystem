@@ -23,7 +23,7 @@ module.exports = {
         if (!req.users || !req.users.isAdmin) return views.error({"message": "Usuário não autorizado!"}, 401, "Unauthorized", res);
         let protocol = await manageProtocol();
         let cars = new Cars({client, date, service, paymentMethod, observation, discount, status});
-        cars.protocol = protocol;
+        cars.protocol = parseInt(`${new Date().toLocaleDateString().replace('-', "").replace('-', "")}${(protocol < 10)? `0${protocol}`: protocol}`);
         cars.licensePlate = licensePlate;
         cars.carBrand = carBrand;
         cars.color = color;
