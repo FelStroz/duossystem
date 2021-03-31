@@ -15,7 +15,7 @@ export const MenuItem = styled(MenuItemLink)`
         color: white;
     `}
     border-radius: 10px;
-    height: 6vh;
+    height: 8vh;
 `;
 
 export const ContainerImage = styled.div`

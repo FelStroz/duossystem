@@ -58,15 +58,14 @@ h1, h2 , h3, h4, h5, h6, p, li, ul {
 }
 
 .divInputs{
-  width: 74vw !important;
+  width: max-content;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 }
 
 .MuiDrawer-paper {
-  width: 240px !important;
+  width: 200px !important;
 }
 
 .RaAutocompleteInput-container-64{

@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         zIndex: 1,
         minHeight: 'calc(100vh - 80px)',
-        padding: 40,
+        padding: 10,
         position: 'relative',
         backgroundColor: '#dbe8f8',
     },

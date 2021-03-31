@@ -54,7 +54,7 @@ const containerInformationCardStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 70
+    marginTop: 70,
 }
 
 const containerImageCardStyle = {
@@ -216,7 +216,7 @@ async function getFinances(timestamp = "year") {
 const FinantialList = () => {
     const classes = useStyles();
     let [isLoading, setIsLoading] = useState(true);
-    let [list, setList] = useState();
+    let [list, setList] = useState({totalPayed: 0});
     let [timestamp, setTimestamp] = React.useState('');
 
     const handleChange = (event) => {

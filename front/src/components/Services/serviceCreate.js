@@ -247,9 +247,9 @@ const ServiceCreate = props => {
                                 </div>
                                 <div className={"divInputs"}>
                                     <TextInput label="Modelo" source="carBrand" validate={[required()]}/>
-                                    <TextInput label="Cor" source="color" validate={[required()]}/>
+                                    <TextInput label="Cor" source="color" validate={[required()]} style={{marginLeft: 30}}/>
                                     <DateInput label="Data do Serviço" source="date" defaultValue={today}
-                                               validate={[required()]}/>
+                                               style={{display: "none"}}/>
                                 </div>
                             </div>
                         }

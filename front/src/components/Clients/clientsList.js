@@ -156,8 +156,8 @@ export const ClientList = props => {
                         <InstagramField label="Instagram" source="instagram"/>
                         <TextField label="Telefone" source="phone"/>
                         <TextField label="Endereço" source="address"/>
-                        <ClientNumberServices label="Número de Serviços"/>
-                        <ButtonShow label="Listagem de Serviços"/>
+                        <ClientNumberServices label="N° de Serviços"/>
+                        <ButtonShow label="Serviços"/>
                         <ClientFrequency label="Assiduidade"/>
                     </Datagrid>
                 )}
